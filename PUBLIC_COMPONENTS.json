@@ -1,0 +1,25 @@
+{
+  "components": [
+    {
+      "bundle_path": "components/processor-worker",
+      "installation": ".venv/processor",
+      "name": "processor-worker",
+      "role": "bounded deterministic processing reliability product"
+    },
+    {
+      "bundle_path": "components/replication-worker",
+      "installation": ".venv/replication",
+      "name": "replication-worker",
+      "role": "bounded deterministic local replication convergence product"
+    },
+    {
+      "bundle_path": ".",
+      "installation": ".venv/showcase",
+      "name": "showcase",
+      "role": "subprocess orchestration, receipt validation, inspection, and cleanup"
+    }
+  ],
+  "composition": "Generated workers are bundled from their independent export products and installed into separate environments.",
+  "schema": "edge-evidence-public-components.v2",
+  "source_policy": "Generated public products; authoritative corrections are upstream-first."
+}

@@ -1,0 +1,18 @@
+{
+  "candidate_content_tree_sha256": "3d726e596d005db3320e8a9735e660f4288125e6047eccebdaab07220d063103",
+  "candidate_path_count": 63,
+  "component": "replication-worker",
+  "dependency_boundary": {
+    "path": "DEPENDENCY_BOUNDARY.md",
+    "sha256": "576e6830573b62dd2ae84e7f40179411faf718a238613ed047f55a813c55c26e"
+  },
+  "exporter_version": 2,
+  "product_policy": "generated-product/upstream-first",
+  "public_license": "MIT",
+  "public_source_label": "private canonical source (identity withheld)",
+  "schema_version": 2,
+  "verification_commands": [
+    "python -m compileall -q apps packages demo",
+    "python -m pytest -q"
+  ]
+}

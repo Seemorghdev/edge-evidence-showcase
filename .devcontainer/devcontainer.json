@@ -1,0 +1,11 @@
+{
+  "name": "Edge Evidence Integrated Showcase",
+  "build": {
+    "dockerfile": "../Dockerfile",
+    "context": "..",
+    "target": "dev"
+  },
+  "workspaceFolder": "/workspaces/edge-evidence-showcase",
+  "remoteUser": "showcase",
+  "postCreateCommand": "bash scripts/setup.sh"
+}

@@ -1,0 +1,27 @@
+[build-system]
+requires = ["setuptools==82.0.1"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "edge-evidence-processor-worker"
+version = "0.1.0"
+description = "Bounded deterministic processing catch-up worker"
+readme = "README.md"
+requires-python = ">=3.12"
+license = { text = "MIT" }
+authors = [{ name = "Seemorgh" }]
+dependencies = []
+
+[project.optional-dependencies]
+dev = ["pytest>=8,<9"]
+
+[project.scripts]
+processor-worker = "apps.processor_worker.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["apps", "apps.edge_agent*", "apps.processor_worker*", "packages*"]
+
+[tool.pytest.ini_options]
+addopts = "--strict-config"
+testpaths = ["tests"]

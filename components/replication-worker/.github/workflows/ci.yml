@@ -1,0 +1,188 @@
+name: exported-behavior
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  python:
+    name: Python ${{ matrix.python-version }}
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.11", "3.14"]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Prove clean isolated base installation
+        run: |
+          python -m venv /tmp/replication-worker-clean
+          /tmp/replication-worker-clean/bin/python -m pip install --upgrade pip
+          /tmp/replication-worker-clean/bin/python -m pip install .
+          /tmp/replication-worker-clean/bin/python -m pip check
+          /tmp/replication-worker-clean/bin/replication-worker --help
+          /tmp/replication-worker-clean/bin/python - <<'PY'
+          import importlib.util
+
+          try:
+              found = importlib.util.find_spec("google.cloud.storage")
+          except ModuleNotFoundError:
+              found = None
+          assert found is None
+          PY
+      - name: Install developer and test tools
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install --no-cache-dir -e '.[dev]'
+      - name: Verify bounded-agent contract surface
+        run: |
+          python -m compileall -q packages/agent_contracts
+          python -m pytest -q tests/test_agent_contracts.py
+      - name: Compile generated runtime and developer tools
+        run: >-
+          python -m compileall -q
+          apps/_cli.py
+          apps/replication_worker
+          packages/database
+          packages/replication
+          demo
+          scripts
+      - name: Candidate tests and privacy gates
+        run: make test
+      - name: Run deterministic canonical demo
+        run: make demo
+      - name: Assert adoption, readback, cleanup, rerun, and refusal
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+
+          receipt = json.loads(Path(".demo-output/summary.json").read_text())
+          assert receipt["schema_version"] == 2
+          assert receipt["status"] == "pass"
+          assert receipt["proof_class"] == "deterministic_local_replication"
+          assert receipt["authority"] == {
+              "database_schema_version": 10,
+              "target_id": "demo-target",
+              "adapter_kind": "mounted_nfs_v4",
+          }
+          success = receipt["success"]
+          assert success["target_lifecycle"]["initial_path"] == "created"
+          assert success["target_lifecycle"]["repeat_path"] == "adopted_existing"
+          assert success["target_lifecycle"]["metadata_unchanged_on_repeat"] is True
+          assert success["first_run"]["published"] == 1
+          assert success["first_run"]["adopted"] == 1
+          assert success["first_run"]["verified"] == 2
+          assert all(item["identity_and_content_match"] for item in success["readback"])
+          assert success["cleanup"]["existed_before"] is True
+          assert success["cleanup"]["exists_after"] is False
+          assert success["rerun"]["summary"]["published"] == 0
+          assert success["rerun"]["summary"]["adopted"] == 0
+          assert success["rerun"]["summary"]["inserted"] == 0
+          assert success["rerun"]["authority_rows_unchanged"] is True
+          assert receipt["collision"]["exit_code"] == 4
+          assert receipt["collision"]["finding"] == "destination_collision"
+          assert receipt["collision"]["wrong_bytes_preserved"] is True
+          assert receipt["collision"]["authority"][0]["state"] == "PENDING"
+          assert all(receipt["invariants"].values())
+          serialized = json.dumps(receipt, sort_keys=True)
+          for forbidden in (
+              "/home/", "/Users/", "private" + "_key",
+              "client" + "_secret", "to" + "ken",
+          ):
+              assert forbidden not in serialized
+          PY
+      - name: Prove deterministic repeated demo evidence
+        run: |
+          cp .demo-output/summary.json /tmp/summary.first.json
+          python - <<'PY' > /tmp/digest.first
+          import json
+          from pathlib import Path
+          print(json.loads(Path(".demo-output/manifest.json").read_text())["deterministic_files_sha256"])
+          PY
+          make demo
+          cmp /tmp/summary.first.json .demo-output/summary.json
+          python - <<'PY' > /tmp/digest.second
+          import json
+          from pathlib import Path
+          print(json.loads(Path(".demo-output/manifest.json").read_text())["deterministic_files_sha256"])
+          PY
+          cmp /tmp/digest.first /tmp/digest.second
+      - name: Inspect persistent evidence without mutation
+        run: |
+          python - <<'PY' > /tmp/inspect.before
+          import hashlib
+          from pathlib import Path
+
+          root = Path(".demo-output")
+          for path in sorted(root.rglob("*")):
+              if path.is_file():
+                  print(path.relative_to(root), hashlib.sha256(path.read_bytes()).hexdigest())
+          PY
+          make inspect
+          python - <<'PY' > /tmp/inspect.after
+          import hashlib
+          from pathlib import Path
+
+          root = Path(".demo-output")
+          for path in sorted(root.rglob("*")):
+              if path.is_file():
+                  print(path.relative_to(root), hashlib.sha256(path.read_bytes()).hexdigest())
+          PY
+          cmp /tmp/inspect.before /tmp/inspect.after
+      - name: Prove guarded clean boundary
+        run: |
+          make clean
+          test ! -e .demo-output
+          if make clean DEMO_OUTPUT=../escape; then
+            echo "unsafe cleanup unexpectedly succeeded" >&2
+            exit 1
+          fi
+          test -d packages
+      - name: Recreate safe demo evidence for upload
+        if: matrix.python-version == '3.14'
+        run: make demo
+      - name: Upload safe demo evidence
+        if: matrix.python-version == '3.14'
+        uses: actions/upload-artifact@v4
+        with:
+          name: replication-worker-demo-evidence
+          if-no-files-found: error
+          path: |
+            .demo-output/summary.json
+            .demo-output/summary.txt
+            .demo-output/manifest.json
+
+  devcontainer:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build actual devcontainer Dockerfile
+        run: docker build --file .devcontainer/Dockerfile --tag replication-worker-devcontainer:test .
+
+  gcs-extra:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.14"
+      - name: Install exact optional GCS surface
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install --no-cache-dir -e '.[dev,gcs]'
+          python - <<'PY'
+          import google.cloud.storage
+          assert google.cloud.storage is not None
+          PY
+      - name: Prove fake-provider semantics without network or credentials
+        run: |
+          python -m pytest -q \
+            tests/unit/test_replication_gcs.py \
+            tests/test_exported_integration.py::test_gcs_extra_constructs_provider_target_without_credentials

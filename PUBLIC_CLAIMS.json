@@ -1,0 +1,38 @@
+{
+  "claims": [
+    {
+      "id": "C01",
+      "statement": "The edge-evidence platform preserves immutable local evidence and records canonical local authority in SQLite plus the filesystem.",
+      "status": "supported"
+    },
+    {
+      "id": "C02",
+      "statement": "Processor and replication workers are deterministic bounded executables, not autonomous schedulers or evidence authorities.",
+      "status": "supported"
+    },
+    {
+      "id": "C03",
+      "statement": "Read-only agent surfaces do not gain worker, SQLite, spool, credential, deployment, or publication authority.",
+      "status": "supported"
+    },
+    {
+      "id": "C04",
+      "statement": "This product runs separately installed generated workers and proves a verified synthetic processor report is replicated byte-for-byte into a deterministic local target with independent readback and exact replay no-op behavior.",
+      "status": "synthetic-only"
+    },
+    {
+      "id": "C05",
+      "statement": "The local mounted-filesystem demonstration is not physical NAS, cloud-provider, production, availability, performance, or persistence evidence.",
+      "status": "limitation"
+    }
+  ],
+  "prohibited": [
+    "production-cloud deployment or general availability",
+    "physical NAS or provider proof",
+    "performance, scale, uptime, or fleet qualification",
+    "persistent hosted evidence authority",
+    "authorization for provider operations, cleanup, IAM, deployment, or scheduler activation",
+    "exact private claim/action/worker/SQLite counts"
+  ],
+  "schema": "edge-evidence-public-claims.v2"
+}

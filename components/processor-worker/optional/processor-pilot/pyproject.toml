@@ -1,0 +1,31 @@
+[build-system]
+requires = ["setuptools==82.0.1"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "edge-evidence-processor-pilot"
+version = "0.1.0"
+description = "Optional deterministic read-only processor pilot"
+requires-python = ">=3.12"
+license = { text = "MIT" }
+authors = [{ name = "Seemorgh" }]
+dependencies = ["edge-evidence-processor-worker==0.1.0"]
+
+[project.optional-dependencies]
+adk = ["google-adk==2.6.2"]
+
+[project.scripts]
+processor-pilot = "apps.processor_pilot.cli:main"
+
+[tool.setuptools]
+packages = ["apps.processor_pilot"]
+
+[tool.setuptools.package-dir]
+"apps.processor_pilot" = "apps/processor_pilot"
+
+[tool.pytest.ini_options]
+addopts = "--strict-config --strict-markers"
+testpaths = ["tests"]
+markers = [
+  "pra_p02a_adk_positive: requires the isolated google-adk test environment",
+]

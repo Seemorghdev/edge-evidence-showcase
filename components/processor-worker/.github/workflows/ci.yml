@@ -1,0 +1,231 @@
+name: exported-behavior
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.12", "3.14"]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Install system tools
+        run: |
+          set -euo pipefail
+          sudo apt-get update
+          sudo apt-get install -y ffmpeg make
+
+      - name: Prove clean product installation
+        run: |
+          set -euo pipefail
+          python -m venv /tmp/processor-worker-clean
+          /tmp/processor-worker-clean/bin/python -m pip install --upgrade pip
+          /tmp/processor-worker-clean/bin/python -m pip install .
+          /tmp/processor-worker-clean/bin/python -m pip check
+          /tmp/processor-worker-clean/bin/processor-worker --help
+          /tmp/processor-worker-clean/bin/python - <<'PYBOUNDARY'
+          import importlib.util
+          import shutil
+
+          def find_spec(name: str):
+              try:
+                  return importlib.util.find_spec(name)
+              except ModuleNotFoundError:
+                  return None
+
+          assert find_spec("apps.processor_pilot") is None
+          assert find_spec("google.adk") is None
+          assert shutil.which("processor-pilot") is None
+          PYBOUNDARY
+
+      - name: Set up developer environment
+        run: |
+          set -euo pipefail
+          PYTHON=python bash scripts/setup.sh
+          .venv/bin/python -m pip check
+          echo "$PWD/.venv/bin" >> "$GITHUB_PATH"
+
+      - name: Validate public-safe provenance and base boundary
+        run: |
+          .venv/bin/python - <<'PY'
+          import importlib.util
+          import json
+          import re
+          import shutil
+          from pathlib import Path
+
+          from apps.processor_worker import provenance
+
+          def find_spec(name: str):
+              try:
+                  return importlib.util.find_spec(name)
+              except ModuleNotFoundError:
+                  return None
+
+          assert provenance.SOURCE_IDENTITY == "private-redacted"
+          assert provenance.PUBLIC_SOURCE_LABEL == (
+              "private canonical source (identity withheld)"
+          )
+          assert provenance.PUBLIC_COMMIT_SENTINEL == "0" * 40
+          assert provenance.CANONICAL_REPOSITORY == "private-redacted"
+          assert provenance.CANONICAL_COMMIT == "0" * 40
+          assert re.fullmatch(r"0{40}", provenance.CANONICAL_COMMIT)
+
+          exported = json.loads(
+              Path("EXPORT_PROVENANCE.json").read_text(encoding="utf-8")
+          )
+          assert set(exported) == {
+              "schema_version",
+              "exporter_version",
+              "component",
+              "product_policy",
+              "public_source_label",
+              "candidate_path_count",
+              "candidate_content_tree_sha256",
+              "public_license",
+              "dependency_boundary",
+              "verification_commands",
+          }
+          assert exported["schema_version"] == 2
+          assert exported["exporter_version"] == 2
+          assert exported["component"] == "processor-worker"
+          assert exported["product_policy"] == "generated-product/upstream-first"
+          assert exported["public_source_label"] == provenance.PUBLIC_SOURCE_LABEL
+          assert exported["public_license"] == "MIT"
+          PY
+
+      - name: Verify bounded-agent contract surface
+        run: |
+          set -euo pipefail
+          .venv/bin/python -m compileall -q packages/agent_contracts
+          .venv/bin/python -m pytest -q tests/test_agent_contracts.py
+
+      - name: Run candidate tests
+        run: |
+          set -euo pipefail
+          make test
+
+      - name: Run normal, resume, and busy-lock demonstrations
+        run: |
+          set -euo pipefail
+          make demo
+          make inspect > /tmp/processor-worker-inspect.txt
+          .venv/bin/python - <<'PY'
+          import json
+          from pathlib import Path
+
+          summary = json.loads(Path(".demo-output/summary.json").read_text())
+          assert summary["status"] == "pass"
+          assert summary["proof_class"] == "standalone_synthetic_processing_reliability"
+          assert summary["constraints"] == {
+              "credentials_required": False,
+              "external_service_required": False,
+              "model_required": False,
+              "network_required": False,
+              "publication_performed": False,
+              "synthetic_inputs_only": True,
+          }
+
+          normal = summary["scenarios"]["normal"]
+          assert normal["worker_runs"]["first"]["newly_completed"] == 1
+          assert normal["worker_runs"]["replay"]["already_complete"] == 1
+          assert normal["invariants"]["derived_files_verified"] is True
+          assert normal["invariants"]["replay_idempotent"] is True
+
+          resume = summary["scenarios"]["resume"]
+          assert resume["interruption"]["checkpoint_state"] == "PREPARED"
+          assert resume["interruption"]["metadata_artifacts_before_resume"] == 0
+          assert resume["interruption"]["lineage_rows_before_resume"] == 0
+          assert resume["worker_runs"]["resume"]["prepared_resumed"] == 1
+          assert resume["invariants"]["same_job_resumed"] is True
+
+          busy = summary["scenarios"]["busy-lock"]
+          assert busy["worker_runs"]["blocked"]["status"] == "deferred"
+          assert busy["worker_runs"]["blocked"]["deferred"] == 1
+          assert busy["worker_runs"]["retry"]["newly_completed"] == 1
+          assert busy["invariants"]["blocked_attempt_zero_write"] is True
+          PY
+
+      - name: Prove repeated deterministic output
+        run: |
+          set -euo pipefail
+          .venv/bin/python demo/run_demo.py fingerprint > /tmp/first-fingerprint.json
+          make demo > /tmp/second-demo.txt
+          .venv/bin/python demo/run_demo.py fingerprint > /tmp/second-fingerprint.json
+          cmp /tmp/first-fingerprint.json /tmp/second-fingerprint.json
+
+      - name: Install and test ordinary optional read-only pilot
+        run: |
+          set -euo pipefail
+          .venv/bin/python -m pip install -e './optional/processor-pilot'
+          .venv/bin/python -m compileall -q \
+            optional/processor-pilot/apps/processor_pilot \
+            demo/run_pilot_demo.py
+          .venv/bin/python -m pytest -q \
+            tests/test_processor_pilot_contract.py \
+            tests/unit/test_processor_pilot.py
+          .venv/bin/python demo/run_pilot_demo.py > /tmp/processor-pilot-demo.json
+
+      - name: Prove optional pilot remains ADK-free by default
+        run: |
+          .venv/bin/python - <<'PY'
+          import importlib.util
+          import shutil
+
+          assert importlib.util.find_spec("apps.processor_pilot") is not None
+          try:
+              found = importlib.util.find_spec("google.adk")
+          except ModuleNotFoundError:
+              found = None
+          assert found is None
+          assert shutil.which("processor-pilot") is not None
+          PY
+
+      - name: Collect optional ADK contract tests without provider or credentials
+        run: |
+          set -euo pipefail
+          pushd optional/processor-pilot >/dev/null
+          ../../.venv/bin/python -m pytest --collect-only -q \
+            tests/unit/test_processor_pilot_adk_adapter.py \
+            tests/architecture/test_processor_readonly_adk_boundaries.py
+          popd >/dev/null
+
+      - name: Upload safe demonstration evidence
+        if: matrix.python-version == '3.14'
+        uses: actions/upload-artifact@v4
+        with:
+          name: processor-worker-demo-evidence-python-3.14
+          if-no-files-found: error
+          retention-days: 14
+          path: |
+            .demo-output/summary.json
+            .demo-output/summary.txt
+            .demo-output/normal/receipt.json
+            .demo-output/normal/summary.txt
+            .demo-output/resume/receipt.json
+            .demo-output/resume/summary.txt
+            .demo-output/busy-lock/receipt.json
+            .demo-output/busy-lock/summary.txt
+
+  devcontainer:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build actual development container
+        run: |
+          set -euo pipefail
+          docker build \
+            --file .devcontainer/Dockerfile \
+            --tag processor-worker-devcontainer:test \
+            .
