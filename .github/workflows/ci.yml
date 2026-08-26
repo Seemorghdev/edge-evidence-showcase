@@ -40,9 +40,9 @@ jobs:
           NO_PROXY: "*"
         run: |
           make demo OUTPUT_ROOT=.demo-output-a
-          make fingerprint OUTPUT_ROOT=.demo-output-a > /tmp/fingerprint-a.json
+          make --silent fingerprint OUTPUT_ROOT=.demo-output-a > /tmp/fingerprint-a.json
           make demo OUTPUT_ROOT=.demo-output-b
-          make fingerprint OUTPUT_ROOT=.demo-output-b > /tmp/fingerprint-b.json
+          make --silent fingerprint OUTPUT_ROOT=.demo-output-b > /tmp/fingerprint-b.json
           diff -u /tmp/fingerprint-a.json /tmp/fingerprint-b.json
       - name: Inspect without mutation and package safe evidence
         run: |
