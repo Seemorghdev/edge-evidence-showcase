@@ -8,15 +8,20 @@
   readback, transient cleanup, replay, and collision refusal proofs.
 - Byte-for-byte handoff of the verified processor report into one deterministic local
   replication target.
-- No network, credentials, model call, ADK execution, Ollama, provider call, or public
-  repository write during the demonstration.
+- A read-only HTTP adapter with health/readiness endpoints and one fixed synthetic
+  demonstration endpoint that accepts no body, query input, evidence, or camera source.
+- Bounded Cloud Run and Heroku deployment automation for the same canonical container.
+- No credentials, model call, ADK execution, Ollama, or external service call from the
+  synthetic workload itself.
 
 ## Not claimed
 
-- Physical camera, NAS, or cloud-provider execution.
-- Production deployment, continuous operation, general availability, performance,
-  fleet scale, uptime, or SLOs.
+- Physical camera, NAS, private evidence, or field integration.
+- Production-grade deployment, continuous operation, general availability,
+  performance, fleet scale, uptime, or SLOs.
 - Persistent hosted evidence authority.
-- Authorization for any provider operation, IAM change, infrastructure change,
-  publication, scheduler activation, or retained-state deletion.
-- Equivalence between container-local synthetic state and retained private evidence.
+- Equivalence between provider smoke evidence and durable private evidence.
+- Authorization for independent provider operations, IAM changes, infrastructure
+  expansion, scheduler activation, or retained-state deletion outside the reviewed
+  deployment workflow.
+- GKE, Helm, Datadog, custom domains, or production observability.

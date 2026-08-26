@@ -2,6 +2,8 @@
 .github
 .venv
 .demo-output
+.demo-output-*
+gha-creds-*.json
 **/__pycache__
 **/.pytest_cache
 **/*.pyc

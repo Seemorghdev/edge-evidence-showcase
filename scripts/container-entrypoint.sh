@@ -1,10 +1,13 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-command_name="${1:-demo}"
+command_name="${1:-serve}"
 shift || true
 
 case "${command_name}" in
+  serve)
+    exec .venv/showcase/bin/python scripts/serve_showcase.py "$@"
+    ;;
   demo)
     exec make demo "$@"
     ;;

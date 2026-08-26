@@ -6,8 +6,9 @@ report flowing into deterministic local replication without importing both worke
 into one Python process.
 
 The showcase is generated from private canonical source (identity withheld). Authoritative corrections are
-upstream-first. The generated bundle contains no credentials, provider coordinates,
-private proof material, deployment configuration, or publication authority.
+upstream-first. The generated bundle contains no credentials, private proof material,
+camera source, or persistent-authority configuration. Its deployment adapters remain
+manual and require separately configured provider access.
 
 ## One-command experience
 
@@ -56,28 +57,54 @@ inside this repository.
 
 ## Container execution
 
-Build the canonical runtime image from the generated bundle:
+Build the canonical runtime image from the generated bundle. The default command is a
+read-only HTTP adapter that accepts no body, query input, evidence, or camera source:
 
 ```bash
 docker build --target runtime -t edge-evidence-showcase:local .
+docker run --rm --publish 127.0.0.1:8080:8080 \
+  --env PORT=8080 \
+  --cpus 1 --memory 512m \
+  edge-evidence-showcase:local
+curl --fail http://127.0.0.1:8080/healthz
+curl --fail http://127.0.0.1:8080/api/demo
+```
+
+Each instance runs the deterministic synthetic workload at most once, caches only its
+public summary in memory, and removes its temporary output. The original batch-style
+container commands remain available explicitly:
+
+```bash
 docker run --rm --network none \
   --mount type=bind,src="$PWD/.demo-output",dst=/workspace/showcase/.demo-output \
   edge-evidence-showcase:local demo
 ```
 
-The runtime uses a non-root user. Container-local files and SQLite databases are
-demonstration state only and are not persistent evidence authority.
+The runtime uses a non-root user. Container-local files, SQLite databases, and
+in-memory summaries are demonstration state only and are not persistent evidence
+authority.
+
+## Bounded live deployment
+
+`.github/workflows/deploy-live.yml` builds the canonical `linux/amd64` runtime image
+once, deploys it to Cloud Run and Heroku, and smoke-tests both public origins. Cloud Run
+uses minimum instances `0`, maximum instances `3`, one vCPU, `512Mi` memory, concurrency
+`1`, and HTTP startup/readiness/liveness probes. Heroku is limited to one bounded web
+dyno. No provider credential is stored in this bundle.
+
+Live URLs and deployment badges are intentionally absent until both deployments pass
+the same public synthetic smoke test.
 
 ## Boundaries
 
-- Synthetic local inputs only.
-- No network during the demonstration.
-- No credentials or provider calls.
+- Synthetic inputs only.
+- No request-supplied evidence or camera access.
+- No credentials or external provider call from the synthetic workload.
 - No ADK execution, model call, or autonomous loop.
 - No Ollama.
-- No cloud deployment or telemetry implementation.
 - No production, availability, performance, fleet, or physical-storage claim.
-- No public repository creation or mutation.
+- No persistent hosted evidence authority.
+- GKE, Helm, Datadog, custom domains, and physical integration are out of scope.
 
 ## Security and contributions
 
@@ -86,10 +113,9 @@ Security Advisories**, not public issues. Do not disclose credentials, provider
 coordinates, retained evidence, or personal data. See `SECURITY.md` and
 `CONTRIBUTING.md`.
 
-## License and publication boundary
+## License and control boundary
 
 License: **MIT**.
 
-The presence of a license does not authorize publication. Candidate generation and
-`publish-check` remain fail-closed until a separate reviewed change explicitly
-authorizes a public write.
+The presence of the workflow does not authorize third-party provider writes. The
+canonical upstream review and the protected `live-demo` environment control deployment.

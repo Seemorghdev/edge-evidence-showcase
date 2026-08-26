@@ -6,3 +6,5 @@ build/
 dist/
 .venv/
 .demo-output/
+.demo-output-*/
+gha-creds-*.json

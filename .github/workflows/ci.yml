@@ -96,3 +96,37 @@ jobs:
           docker cp "$cid:/tmp/container-inspect.txt" /tmp/container-inspect.txt
           test -f container-output/combined/summary.json
           test -s /tmp/container-inspect.txt
+      - name: Smoke the bounded HTTP service locally
+        run: |
+          set -euo pipefail
+          network="edge-evidence-showcase-http-${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}"
+          name="edge-evidence-showcase-http"
+          cleanup() {
+            docker rm -f "$name" >/dev/null 2>&1 || true
+            docker network rm "$network" >/dev/null 2>&1 || true
+          }
+          trap cleanup EXIT
+          docker network create --internal "$network" >/dev/null
+          docker run --detach --name "$name" \
+            --network "$network" \
+            --publish 127.0.0.1:18080:8080 \
+            --cpus 1 \
+            --memory 512m \
+            --pids-limit 256 \
+            --security-opt no-new-privileges \
+            --env PORT=8080 \
+            edge-evidence-showcase:runtime
+          for attempt in $(seq 1 30); do
+            if curl --fail --silent http://127.0.0.1:18080/readyz >/dev/null; then
+              break
+            fi
+            if [[ "$attempt" == 30 ]]; then
+              docker logs "$name"
+              exit 1
+            fi
+            sleep 1
+          done
+          python3 scripts/smoke_live.py \
+            --url http://127.0.0.1:18080 \
+            --allow-http \
+            | tee /tmp/local-service-smoke.json

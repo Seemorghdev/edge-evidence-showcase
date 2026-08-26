@@ -25,8 +25,9 @@ COPY . .
 RUN bash scripts/setup.sh \
     && chown -R showcase:showcase /workspace/showcase
 USER showcase
+EXPOSE 8080
 ENTRYPOINT ["bash", "scripts/container-entrypoint.sh"]
-CMD ["demo"]
+CMD ["serve"]
 
 FROM tools AS dev
 USER showcase

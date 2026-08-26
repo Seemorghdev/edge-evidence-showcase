@@ -12,7 +12,7 @@
     },
     {
       "id": "C03",
-      "statement": "Read-only agent surfaces do not gain worker, SQLite, spool, credential, deployment, or publication authority.",
+      "statement": "Read-only agent and HTTP surfaces do not gain worker, SQLite, spool, credential, deployment, publication, or persistent-evidence authority.",
       "status": "supported"
     },
     {
@@ -22,16 +22,21 @@
     },
     {
       "id": "C05",
-      "statement": "The local mounted-filesystem demonstration is not physical NAS, cloud-provider, production, availability, performance, or persistence evidence.",
+      "statement": "The same canonical runtime container can expose a fixed synthetic HTTP demo and be deployed with bounded Cloud Run and Heroku controls.",
+      "status": "deployment-support"
+    },
+    {
+      "id": "C06",
+      "statement": "Hosted provider smoke evidence is not physical NAS, production availability, performance, fleet, durability, or persistent evidence-authority proof.",
       "status": "limitation"
     }
   ],
   "prohibited": [
-    "production-cloud deployment or general availability",
-    "physical NAS or provider proof",
+    "production-grade cloud or general availability claims",
+    "physical NAS or private-evidence proof",
     "performance, scale, uptime, or fleet qualification",
     "persistent hosted evidence authority",
-    "authorization for provider operations, cleanup, IAM, deployment, or scheduler activation",
+    "independent provider, cleanup, IAM, or scheduler operations outside reviewed controls",
     "exact private claim/action/worker/SQLite counts"
   ],
   "schema": "edge-evidence-public-claims.v2"

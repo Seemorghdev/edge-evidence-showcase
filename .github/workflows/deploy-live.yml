@@ -1,0 +1,120 @@
+name: deploy-live-synthetic-showcase
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  id-token: write
+
+concurrency:
+  group: live-synthetic-showcase
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    environment: live-demo
+    env:
+      GCP_PROJECT_ID: ${{ vars.GCP_PROJECT_ID }}
+      GCP_REGION: ${{ vars.GCP_REGION }}
+      GCP_ARTIFACT_REPOSITORY: ${{ vars.GCP_ARTIFACT_REPOSITORY }}
+      GCP_CLOUD_RUN_SERVICE: ${{ vars.GCP_CLOUD_RUN_SERVICE }}
+      GCP_WORKLOAD_IDENTITY_PROVIDER: ${{ vars.GCP_WORKLOAD_IDENTITY_PROVIDER }}
+      GCP_SERVICE_ACCOUNT: ${{ vars.GCP_SERVICE_ACCOUNT }}
+      HEROKU_APP_NAME: ${{ vars.HEROKU_APP_NAME }}
+      HEROKU_REGION: ${{ vars.HEROKU_REGION }}
+      HEROKU_DYNO_SIZE: ${{ vars.HEROKU_DYNO_SIZE }}
+      HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Require bounded deployment configuration
+        run: |
+          set -euo pipefail
+          test -n "${GCP_PROJECT_ID}"
+          test -n "${GCP_WORKLOAD_IDENTITY_PROVIDER}"
+          test -n "${GCP_SERVICE_ACCOUNT}"
+          test -n "${HEROKU_APP_NAME}"
+          test -n "${HEROKU_API_KEY}"
+          : "${GCP_REGION:=europe-west1}"
+          : "${GCP_ARTIFACT_REPOSITORY:=edge-evidence-showcase}"
+          : "${GCP_CLOUD_RUN_SERVICE:=edge-evidence-showcase}"
+          : "${HEROKU_REGION:=eu}"
+          : "${HEROKU_DYNO_SIZE:=basic}"
+          {
+            echo "GCP_REGION=${GCP_REGION}"
+            echo "GCP_ARTIFACT_REPOSITORY=${GCP_ARTIFACT_REPOSITORY}"
+            echo "GCP_CLOUD_RUN_SERVICE=${GCP_CLOUD_RUN_SERVICE}"
+            echo "HEROKU_REGION=${HEROKU_REGION}"
+            echo "HEROKU_DYNO_SIZE=${HEROKU_DYNO_SIZE}"
+          } >> "${GITHUB_ENV}"
+
+      - id: google-auth
+        uses: google-github-actions/auth@v3
+        with:
+          project_id: ${{ vars.GCP_PROJECT_ID }}
+          workload_identity_provider: ${{ vars.GCP_WORKLOAD_IDENTITY_PROVIDER }}
+          service_account: ${{ vars.GCP_SERVICE_ACCOUNT }}
+
+      - uses: google-github-actions/setup-gcloud@v3
+        with:
+          version: ">= 490.0.0"
+
+      - name: Ensure bounded Artifact Registry repository
+        run: |
+          set -euo pipefail
+          if ! gcloud artifacts repositories describe "${GCP_ARTIFACT_REPOSITORY}" \
+            --project="${GCP_PROJECT_ID}" \
+            --location="${GCP_REGION}" >/dev/null 2>&1; then
+            gcloud artifacts repositories create "${GCP_ARTIFACT_REPOSITORY}" \
+              --project="${GCP_PROJECT_ID}" \
+              --location="${GCP_REGION}" \
+              --repository-format=docker \
+              --description="Synthetic edge-evidence showcase images" \
+              --quiet
+          fi
+          gcloud auth configure-docker "${GCP_REGION}-docker.pkg.dev" --quiet
+
+      - name: Build one canonical linux/amd64 runtime image
+        run: |
+          set -euo pipefail
+          local_image="edge-evidence-showcase:${GITHUB_SHA}"
+          cloud_image="${GCP_REGION}-docker.pkg.dev/${GCP_PROJECT_ID}/${GCP_ARTIFACT_REPOSITORY}/showcase:${GITHUB_SHA}"
+          docker build --platform linux/amd64 --target runtime --tag "${local_image}" .
+          docker tag "${local_image}" "${cloud_image}"
+          docker push "${cloud_image}"
+          {
+            echo "LOCAL_IMAGE=${local_image}"
+            echo "CLOUD_IMAGE=${cloud_image}"
+          } >> "${GITHUB_ENV}"
+
+      - name: Deploy primary Cloud Run service
+        id: cloud-run
+        run: |
+          set -euo pipefail
+          url="$(bash deploy/cloud-run.sh "${CLOUD_IMAGE}")"
+          echo "url=${url}" >> "${GITHUB_OUTPUT}"
+
+      - name: Deploy secondary Heroku service from the same local image
+        id: heroku
+        run: |
+          set -euo pipefail
+          url="$(bash deploy/heroku.sh "${LOCAL_IMAGE}")"
+          echo "url=${url}" >> "${GITHUB_OUTPUT}"
+
+      - name: Smoke both public deployments and compare fingerprints
+        run: |
+          python3 scripts/smoke_live.py \
+            --url "${{ steps.cloud-run.outputs.url }}" \
+            --url "${{ steps.heroku.outputs.url }}" \
+            | tee deployment-smoke.json
+
+      - name: Retain bounded deployment evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: live-synthetic-showcase-smoke
+          path: deployment-smoke.json
+          if-no-files-found: error
+          retention-days: 7
