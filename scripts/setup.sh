@@ -18,7 +18,7 @@ create_environment() {
   local environment="${ROOT}/.venv/${name}"
 
   if [[ ! -x "${environment}/bin/python" ]]; then
-    "${PYTHON}" -m venv --system-site-packages "${environment}"
+    "${PYTHON}" -m venv --copies --system-site-packages "${environment}"
   fi
   "${environment}/bin/python" -m pip install \
     --no-index \
@@ -30,6 +30,12 @@ create_environment() {
 
 create_environment showcase "${ROOT}"
 create_environment processor "${ROOT}/components/processor-worker"
+"${ROOT}/.venv/processor/bin/python" -m pip install \
+  --no-index \
+  --no-deps \
+  --no-build-isolation \
+  --disable-pip-version-check \
+  -e "${ROOT}/components/processor-worker/optional/processor-pilot"
 create_environment replication "${ROOT}/components/replication-worker"
 
 for tool in make ffmpeg ffprobe sqlite3; do

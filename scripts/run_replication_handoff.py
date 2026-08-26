@@ -96,7 +96,7 @@ def _seed_processor_output(
     data = source_path.read_bytes()
     digest = _sha(data)
     recording_id = f"sha256:{digest}"
-    storage_uri = f"file:recordings/sha256/{digest[:2]}/{digest}.json"
+    storage_uri = f"file:recordings/sha256/{digest[:2]}/{digest}.source"
     spool_path = _safe_relative_uri(spool, storage_uri)
     spool_path.parent.mkdir(parents=True, exist_ok=True)
     spool_path.write_bytes(data)
