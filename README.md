@@ -114,8 +114,10 @@ authentication prerequisites, exact plan/apply commands, expected diff, smoke,
 evidence, stop conditions, and rollback. See `deploy/README.md` for the wider
 Cloud Run and Heroku execution boundary.
 
-Live URLs and deployment badges are intentionally absent because no hosted deployment
-has been executed or verified.
+A disposable, authenticated-only Cloud Run deployment of an exact immutable image has
+completed provider readback and synthetic smoke verification. The live URL, project,
+identity, state, and private evidence coordinates remain intentionally absent. This
+public repository still carries no credentials and grants no deployment authority.
 
 ## Boundaries
 

@@ -7,9 +7,11 @@ decision, image digest, state location, and rollback target are frozen.
 
 ## Current stage
 
-The current stage is **service-owned Terraform planning**. No real provider plan,
-resource creation, public URL, hosted smoke proof, availability claim, or production
-claim is implied by these files.
+These files remain **credential-free service-owned Terraform preparation** and do not
+authorize a provider plan or apply. One separately owner-authorized, private Cloud Run
+execution completed outside repository authority; that bounded proof does not add a
+public URL, availability claim, production claim, credential, or live execution path
+to this repository.
 
 The public GitHub Actions surface validates syntax, the deployment contract, the
 service-owned Cloud Run configuration, mocked Terraform plan tests, and policy

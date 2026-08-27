@@ -22,12 +22,12 @@
     },
     {
       "id": "C05",
-      "statement": "The canonical runtime container includes credential-free, guarded Cloud Run and Heroku deployment preparation for an approved local executor; no hosted deployment has yet been executed or verified.",
-      "status": "deployment-preparation"
+      "statement": "The canonical runtime container completed one owner-authorized private Cloud Run deployment and authenticated synthetic smoke proof in a disposable environment; the repository remains credential-free and is not deployment authority.",
+      "status": "private-deployment-verified"
     },
     {
       "id": "C06",
-      "statement": "Future hosted provider smoke evidence would not be physical NAS, production availability, performance, fleet, durability, or persistent evidence-authority proof.",
+      "statement": "The private hosted provider smoke evidence is not physical NAS, production availability, performance, fleet, durability, or persistent evidence-authority proof.",
       "status": "limitation"
     }
   ],

@@ -47,6 +47,11 @@ run "private_service_plan" {
   }
 
   assert {
+    condition     = google_cloud_run_v2_service.showcase.template[0].containers[0].resources[0].cpu_idle
+    error_message = "Request-based billing must remain explicit when resource limits are set."
+  }
+
+  assert {
     condition     = google_cloud_run_v2_service.showcase.template[0].containers[0].image == local.image_uri
     error_message = "The service must use the immutable regional Artifact Registry image."
   }

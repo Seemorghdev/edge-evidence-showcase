@@ -31,6 +31,7 @@ def main() -> int:
         'max_instance_request_concurrency = 1',
         'min_instance_count = 0',
         'max_instance_count = 3',
+        'cpu_idle = true',
         'cpu    = "1"',
         'memory = "512Mi"',
         'path = "/readyz"',
