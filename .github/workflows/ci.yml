@@ -116,16 +116,22 @@ jobs:
             --security-opt no-new-privileges \
             --env PORT=8080 \
             edge-evidence-showcase:runtime
-          for attempt in $(seq 1 30); do
+          ready=0
+          for attempt in $(seq 1 60); do
             if curl --fail --silent http://127.0.0.1:18080/readyz >/dev/null; then
+              ready=1
               break
             fi
-            if [[ "$attempt" == 30 ]]; then
+            if ! docker inspect --format='{{.State.Running}}' "$name" | grep -qx true; then
               docker logs "$name"
               exit 1
             fi
             sleep 1
           done
+          if [[ "$ready" != 1 ]]; then
+            docker logs "$name"
+            exit 1
+          fi
           python3 scripts/smoke_live.py \
             --url http://127.0.0.1:18080 \
             --allow-http \
