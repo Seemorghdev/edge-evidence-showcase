@@ -11,6 +11,9 @@
 - A read-only HTTP adapter with health/readiness endpoints and one fixed synthetic
   demonstration endpoint that accepts no body, query input, evidence, or camera source.
 - Bounded Cloud Run and Heroku deployment automation for the same canonical container.
+- One owner-authorized, authenticated-only Cloud Run deployment in a disposable
+  environment passed immutable-image readback, provider health, readiness, and the
+  complete synthetic demonstration. Its coordinates and evidence remain private.
 - No credentials, model call, ADK execution, Ollama, or external service call from the
   synthetic workload itself.
 
