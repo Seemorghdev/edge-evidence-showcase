@@ -42,13 +42,16 @@ discovers credentials nor contacts a provider API.
 
 ## Inputs and ownership
 
-Copy `terraform.tfvars.example` only into a private execution directory outside the
-repository. Replace placeholders with owner-approved, non-secret coordinates. The
-image must already exist at an immutable digest and the runtime service account must
-already exist.
+`terraform.tfvars.example` documents the required non-secret inputs. For a future
+approved provider run, copy this directory to a private execution directory outside
+the repository and export the exact frozen values as `TF_VAR_*` variables. A private
+`terraform.tfvars` is optional, but it must not diverge from the shell values used by
+the readback, plan-policy, smoke, and rollback commands.
 
-Public invocation defaults to `false`. Setting it to `true` is an IAM decision and
-requires explicit owner approval before a real plan.
+The image must already exist at an immutable digest and the runtime service account
+must already exist. Public invocation defaults to `false`. Setting it to `true` is an
+IAM decision and requires explicit owner approval before a real plan.
 
-See `EXECUTION_PACKET.md` for the provider-stage preflight, expected diff, exact
-commands, evidence, stop conditions, smoke test, and rollback procedure.
+See `EXECUTION_PACKET.md` for the provider-stage authentication prerequisite,
+non-secret coordinates, exact plan/apply commands, expected diff, evidence, stop
+conditions, smoke test, and rollback procedure.

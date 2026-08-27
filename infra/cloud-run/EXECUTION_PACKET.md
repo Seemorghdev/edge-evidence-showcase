@@ -62,12 +62,30 @@ test ! -e "${SHOWCASE_EXECUTION_ROOT}/.git"
 mkdir -p "${SHOWCASE_EXECUTION_ROOT}"
 cp -R "${REPO_ROOT}/infra/cloud-run/." "${SHOWCASE_EXECUTION_ROOT}/"
 cd "${SHOWCASE_EXECUTION_ROOT}"
-cp terraform.tfvars.example terraform.tfvars
 ```
 
-Edit only `terraform.tfvars` in the private execution directory. Never commit it.
+Export the frozen non-secret coordinates in the private executor shell. Replace every
+placeholder below; do not copy this block into Git or retained logs.
 
-## Offline/static gate
+```bash
+export TF_VAR_project_id='APPROVED_PROJECT_ID'
+export TF_VAR_region='APPROVED_REGION'
+export TF_VAR_artifact_registry_repository='APPROVED_EXISTING_REPOSITORY'
+export TF_VAR_image_name='APPROVED_IMAGE_PATH'
+export TF_VAR_image_digest='sha256:APPROVED_64_LOWERCASE_HEX_DIGEST'
+export TF_VAR_service_name='APPROVED_SERVICE_NAME'
+export TF_VAR_service_account_email='APPROVED_EXISTING_RUNTIME_IDENTITY'
+export TF_VAR_allow_public_invocation='false'
+```
+
+`terraform.tfvars.example` is a schema example only. A private `terraform.tfvars` may
+be used instead, but the shell variables used by the readback, policy, smoke, and
+rollback commands must be exported with identical frozen values. Stop on any mismatch.
+
+## Credential-free static and mocked gate
+
+The `init` command downloads the pinned provider package and schema. It makes no Google
+API call, creates no backend, and requires no Google credentials.
 
 ```bash
 terraform version
@@ -84,8 +102,7 @@ if python3 policy/check_plan.py policy/fixtures/destructive-plan.json --expect-p
 fi
 ```
 
-The executor must inspect `terraform.tfvars` and confirm every value matches the frozen
-packet before continuing.
+Confirm every exported `TF_VAR_*` value matches the frozen packet before continuing.
 
 ## Existing-resource readback and import decision
 
@@ -131,7 +148,9 @@ python3 policy/check_plan.py \
   showcase.tfplan.json \
   --expect-public "${TF_VAR_allow_public_invocation}"
 terraform show -no-color showcase.tfplan > showcase.tfplan.txt
-sha256sum showcase.tfplan showcase.tfplan.json showcase.tfplan.txt
+sha256sum showcase.tfplan showcase.tfplan.json showcase.tfplan.txt \
+  > showcase.tfplan.sha256
+sha256sum -c showcase.tfplan.sha256
 ```
 
 ## Expected diff
@@ -158,9 +177,12 @@ resource outside the two allowed addresses, or cost boundary mismatch.
 Apply only the reviewed binary plan whose hashes were retained:
 
 ```bash
-terraform apply -input=false showcase.tfplan
+sha256sum -c showcase.tfplan.sha256
+terraform apply -input=false showcase.tfplan \
+  | tee terraform-apply.txt
 terraform output -json > terraform-output.json
-sha256sum terraform-output.json
+sha256sum terraform-apply.txt terraform-output.json \
+  > terraform-apply.sha256
 ```
 
 Never rerun `terraform plan` implicitly through `terraform apply` without the reviewed
@@ -173,14 +195,14 @@ SERVICE_URL="$(terraform output -raw service_uri)"
 python3 "${REPO_ROOT}/scripts/smoke_live.py" \
   --url "${SERVICE_URL}" \
   | tee cloud-run-smoke.json
-sha256sum cloud-run-smoke.json
+sha256sum cloud-run-smoke.json > cloud-run-smoke.sha256
 
 gcloud run services describe "${TF_VAR_service_name}" \
   --project="${TF_VAR_project_id}" \
   --region="${TF_VAR_region}" \
   --format='yaml(metadata.name,status.latestCreatedRevisionName,status.latestReadyRevisionName,status.traffic,status.url)' \
   > cloud-run-readback.yaml
-sha256sum cloud-run-readback.yaml
+sha256sum cloud-run-readback.yaml > cloud-run-readback.sha256
 ```
 
 Retain privately:
@@ -189,12 +211,12 @@ Retain privately:
 - Terraform and provider versions;
 - sanitized non-secret coordinates and owner decisions;
 - immutable image digest;
-- plan binary, JSON, text, and SHA-256 values;
+- plan binary, JSON, text, checksum manifest, and SHA-256 verification result;
 - state-before and state-after backups in the approved state location;
 - previous and new revision/image identities;
-- apply result;
+- apply output and checksum;
 - service readback and URL;
-- smoke receipt and SHA-256;
+- smoke receipt and checksum;
 - observed cost boundary;
 - rollback plan, apply, readback, and smoke receipt.
 
@@ -217,7 +239,12 @@ terraform show -json rollback.tfplan > rollback.tfplan.json
 python3 policy/check_plan.py \
   rollback.tfplan.json \
   --expect-public "${TF_VAR_allow_public_invocation}"
-terraform apply -input=false rollback.tfplan
+terraform show -no-color rollback.tfplan > rollback.tfplan.txt
+sha256sum rollback.tfplan rollback.tfplan.json rollback.tfplan.txt \
+  > rollback.tfplan.sha256
+sha256sum -c rollback.tfplan.sha256
+terraform apply -input=false rollback.tfplan \
+  | tee rollback-apply.txt
 python3 "${REPO_ROOT}/scripts/smoke_live.py" \
   --url "$(terraform output -raw service_uri)" \
   | tee rollback-smoke.json
