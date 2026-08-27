@@ -76,6 +76,12 @@ def main() -> int:
     ):
         assert f'variable "{name}"' in variables
 
+    lock = (ROOT / ".terraform.lock.hcl").read_text(encoding="utf-8")
+    assert 'provider "registry.terraform.io/hashicorp/google"' in lock
+    assert 'version     = "7.46.0"' in lock
+    assert 'constraints = "7.46.0"' in lock
+    assert lock.count('"h1:') == 2
+
     example = (ROOT / "terraform.tfvars.example").read_text(encoding="utf-8")
     assert "example-project" in example
     assert "sha256:" + ("a" * 64) in example

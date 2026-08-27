@@ -103,7 +103,7 @@ Run the credential-free checks with:
 ```bash
 python3 scripts/validate_deployment_contract.py
 ./deploy/preflight.sh --offline
-terraform -chdir=infra/cloud-run init -backend=false -input=false
+terraform -chdir=infra/cloud-run init -backend=false -input=false -lockfile=readonly
 terraform -chdir=infra/cloud-run validate
 terraform -chdir=infra/cloud-run test -no-color
 python3 infra/cloud-run/policy/check_source.py
