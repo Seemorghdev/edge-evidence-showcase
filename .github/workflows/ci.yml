@@ -109,7 +109,6 @@ jobs:
           docker network create --internal "$network" >/dev/null
           docker run --detach --name "$name" \
             --network "$network" \
-            --publish 127.0.0.1:18080:8080 \
             --cpus 1 \
             --memory 512m \
             --pids-limit 256 \
@@ -119,7 +118,7 @@ jobs:
           ready=0
           deadline=$((SECONDS + 120))
           while (( SECONDS < deadline )); do
-            if curl --fail --silent http://127.0.0.1:18080/readyz >/dev/null; then
+            if docker exec "$name" python3 -c 'from urllib.request import urlopen; response = urlopen("http://127.0.0.1:8080/readyz", timeout=2); raise SystemExit(0 if response.status == 200 else 1)' >/dev/null 2>&1; then
               ready=1
               break
             fi
@@ -133,7 +132,8 @@ jobs:
             docker logs "$name"
             exit 1
           fi
-          python3 scripts/smoke_live.py \
-            --url http://127.0.0.1:18080 \
+          docker exec --workdir /workspace/showcase "$name" \
+            python3 scripts/smoke_live.py \
+            --url http://127.0.0.1:8080 \
             --allow-http \
             | tee /tmp/local-service-smoke.json
