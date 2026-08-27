@@ -2,14 +2,28 @@
 set -euo pipefail
 
 local_image="${1:?usage: heroku.sh LOCAL_IMAGE}"
+
+if [[ "${SHOWCASE_DEPLOYMENT_APPROVED:-}" != "1" ]]; then
+  echo "SHOWCASE_DEPLOYMENT_APPROVED=1 is required" >&2
+  exit 2
+fi
+if [[ "${SHOWCASE_DEPLOYMENT_EXECUTOR:-}" != "local" ]]; then
+  echo "SHOWCASE_DEPLOYMENT_EXECUTOR=local is required" >&2
+  exit 2
+fi
+
 app_name="${HEROKU_APP_NAME:?HEROKU_APP_NAME is required}"
 api_key="${HEROKU_API_KEY:?HEROKU_API_KEY is required}"
-region="${HEROKU_REGION:-eu}"
 dyno_size="${HEROKU_DYNO_SIZE:-basic}"
 registry_image="registry.heroku.com/${app_name}/web"
 
 if [[ ! "${app_name}" =~ ^[a-z][a-z0-9-]{1,28}[a-z0-9]$ ]]; then
   echo "HEROKU_APP_NAME is invalid" >&2
+  exit 2
+fi
+
+if ! docker image inspect "${local_image}" >/dev/null 2>&1; then
+  echo "local image does not exist: ${local_image}" >&2
   exit 2
 fi
 
@@ -26,20 +40,8 @@ status="$(curl --silent --show-error \
   --header "${accept_header}")"
 
 if [[ "${status}" == "404" ]]; then
-  create_payload="$(python3 - "${app_name}" "${region}" <<'PY'
-import json
-import sys
-print(json.dumps({"name": sys.argv[1], "region": sys.argv[2], "stack": "container"}))
-PY
-)"
-  curl --fail-with-body --silent --show-error \
-    --request POST \
-    "https://api.heroku.com/apps" \
-    --header "${auth_header}" \
-    --header "${accept_header}" \
-    --header "Content-Type: application/json" \
-    --data "${create_payload}" \
-    --output "${app_response}"
+  echo "Heroku app does not exist; app creation is a separate owner-gated action" >&2
+  exit 2
 elif [[ "${status}" != "200" ]]; then
   cat "${app_response}" >&2
   echo "unable to inspect Heroku app (HTTP ${status})" >&2

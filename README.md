@@ -8,7 +8,7 @@ into one Python process.
 The showcase is generated from private canonical source (identity withheld). Authoritative corrections are
 upstream-first. The generated bundle contains no credentials, private proof material,
 camera source, or persistent-authority configuration. Its deployment adapters remain
-manual and require separately configured provider access.
+manual and require a separately approved local credentialed executor.
 
 ## One-command experience
 
@@ -84,22 +84,36 @@ The runtime uses a non-root user. Container-local files, SQLite databases, and
 in-memory summaries are demonstration state only and are not persistent evidence
 authority.
 
-## Bounded live deployment
+## Credential-free deployment preparation
 
-`.github/workflows/deploy-live.yml` builds the canonical `linux/amd64` runtime image
-once, deploys it to Cloud Run and Heroku, and smoke-tests both public origins. Cloud Run
-uses minimum instances `0`, maximum instances `3`, one vCPU, `512Mi` memory, concurrency
-`1`, and HTTP startup/readiness/liveness probes. Heroku is limited to one bounded web
-dyno. No provider credential is stored in this bundle.
+`.github/workflows/deployment-readiness.yml` validates the sanitized deployment
+contract, guarded scripts, shell syntax, and offline preflight. It has read-only
+repository permission and performs no provider authentication, image push, resource
+creation, IAM change, deployment, rollback, or provider smoke.
 
-Live URLs and deployment badges are intentionally absent until both deployments pass
-the same public synthetic smoke test.
+The Cloud Run and Heroku commands are retained under `deploy/` for an approved local
+credentialed executor. Both scripts require explicit approval and local-executor guard
+variables. Cloud Run additionally requires an immutable image digest and separate
+creation/public-invocation guards. Heroku requires a pre-existing container-stack app
+and never creates one.
+
+Run the credential-free checks with:
+
+```bash
+python3 scripts/validate_deployment_contract.py
+./deploy/preflight.sh --offline
+```
+
+See `deploy/README.md` for configuration names, preflight, image identity, exact smoke,
+evidence, stop conditions, and rollback procedures. Live URLs and deployment badges
+are intentionally absent because no hosted deployment has been executed or verified.
 
 ## Boundaries
 
 - Synthetic inputs only.
 - No request-supplied evidence or camera access.
 - No credentials or external provider call from the synthetic workload.
+- No credential-bearing provider execution from public GitHub Actions.
 - No ADK execution, model call, or autonomous loop.
 - No Ollama.
 - No production, availability, performance, fleet, or physical-storage claim.
@@ -117,5 +131,7 @@ coordinates, retained evidence, or personal data. See `SECURITY.md` and
 
 License: **MIT**.
 
-The presence of the workflow does not authorize third-party provider writes. The
-canonical upstream review and the protected `live-demo` environment control deployment.
+The presence of deployment contracts or scripts does not authorize third-party
+provider writes. Provider credentials, billable resources, IAM/public access, exact
+coordinates, cost ceilings, and live execution remain separate owner-approved actions
+performed only by the approved local credentialed executor.

@@ -1,0 +1,78 @@
+{
+  "schema": "edge-evidence-showcase-deployment.v1",
+  "stage": "credential-free-planning",
+  "deployment_authorized": false,
+  "credential_source": "local-executor-only",
+  "public_source": "private canonical source (identity withheld)",
+  "image": {
+    "build_target": "runtime",
+    "platform": "linux/amd64",
+    "port": 8080,
+    "required_digest": true,
+    "same_image_required_for_all_providers": true
+  },
+  "providers": {
+    "cloud_run": {
+      "required_environment": [
+        "GCP_PROJECT_ID",
+        "GCP_REGION",
+        "GCP_CLOUD_RUN_SERVICE"
+      ],
+      "creation_guard": "SHOWCASE_ALLOW_CREATE_CLOUD_RUN_SERVICE",
+      "public_invocation_guard": "SHOWCASE_ALLOW_PUBLIC_INVOCATION",
+      "resource_caps": {
+        "cpu": "1",
+        "memory": "512Mi",
+        "min_instances": 0,
+        "max_instances": 3,
+        "concurrency": 1,
+        "request_timeout_seconds": 120
+      }
+    },
+    "heroku": {
+      "required_environment": [
+        "HEROKU_APP_NAME",
+        "HEROKU_API_KEY"
+      ],
+      "preexisting_app_required": true,
+      "default_region": "eu",
+      "default_dyno_size": "basic",
+      "web_quantity": 1
+    }
+  },
+  "execution_guards": {
+    "SHOWCASE_DEPLOYMENT_APPROVED": "1",
+    "SHOWCASE_DEPLOYMENT_EXECUTOR": "local"
+  },
+  "smoke": {
+    "script": "scripts/smoke_live.py",
+    "required_endpoints": [
+      "/healthz",
+      "/readyz",
+      "/api/demo"
+    ],
+    "compare_provider_fingerprints": true
+  },
+  "required_evidence": [
+    "source_commit",
+    "source_tree",
+    "container_image_digest",
+    "provider_resource_identity",
+    "previous_revision_or_release",
+    "new_revision_or_release",
+    "service_url",
+    "smoke_receipt_sha256",
+    "rollback_command",
+    "rollback_readback",
+    "cost_boundary"
+  ],
+  "prohibited": [
+    "credentials in repository, chat, pull requests, artifacts, or logs",
+    "provider execution from public GitHub Actions",
+    "unreviewed resource creation",
+    "unreviewed IAM or public access changes",
+    "private evidence or camera input",
+    "persistent hosted evidence authority",
+    "production, availability, durability, scale, or fleet claims"
+  ]
+}

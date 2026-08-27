@@ -20,10 +20,11 @@ def test_claims_freeze_integrated_synthetic_scope() -> None:
     by_id = {item["id"]: item for item in claims["claims"]}
     assert by_id["C04"]["status"] == "synthetic-only"
     assert "separately installed generated workers" in by_id["C04"]["statement"]
-    assert by_id["C05"]["status"] == "deployment-support"
-    assert "bounded Cloud Run and Heroku controls" in by_id["C05"]["statement"]
+    assert by_id["C05"]["status"] == "deployment-preparation"
+    assert "approved local executor" in by_id["C05"]["statement"]
+    assert "no hosted deployment" in by_id["C05"]["statement"]
     assert by_id["C06"]["status"] == "limitation"
-    assert "not physical NAS" in by_id["C06"]["statement"]
+    assert "not be physical NAS" in by_id["C06"]["statement"]
     prohibited = " ".join(claims["prohibited"]).lower()
     for marker in (
         "production",
