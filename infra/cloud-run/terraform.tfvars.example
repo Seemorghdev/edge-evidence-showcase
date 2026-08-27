@@ -1,0 +1,8 @@
+project_id                   = "example-project"
+region                       = "europe-west1"
+artifact_registry_repository = "example-showcase-images"
+image_name                   = "showcase"
+image_digest                 = "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+service_name                 = "edge-evidence-showcase"
+service_account_email        = "showcase-runtime\u0040example-project.iam.gserviceaccount.com"
+allow_public_invocation      = false

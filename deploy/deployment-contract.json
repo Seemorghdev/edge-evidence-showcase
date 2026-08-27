@@ -1,6 +1,6 @@
 {
   "schema": "edge-evidence-showcase-deployment.v1",
-  "stage": "credential-free-planning",
+  "stage": "service-owned-terraform-planning",
   "deployment_authorized": false,
   "credential_source": "local-executor-only",
   "public_source": "private canonical source (identity withheld)",
@@ -11,12 +11,31 @@
     "required_digest": true,
     "same_image_required_for_all_providers": true
   },
+  "terraform": {
+    "path": "infra/cloud-run",
+    "terraform_version": "1.16.0",
+    "provider_source": "hashicorp/google",
+    "provider_version": "7.46.0",
+    "backend_configured": false,
+    "mock_provider_tests": true,
+    "real_provider_plan_authorized": false,
+    "real_provider_apply_authorized": false,
+    "allowed_resource_types": [
+      "google_cloud_run_v2_service",
+      "google_cloud_run_v2_service_iam_member"
+    ]
+  },
   "providers": {
     "cloud_run": {
-      "required_environment": [
-        "GCP_PROJECT_ID",
-        "GCP_REGION",
-        "GCP_CLOUD_RUN_SERVICE"
+      "required_non_secret_coordinates": [
+        "project_id",
+        "region",
+        "artifact_registry_repository",
+        "image_name",
+        "image_digest",
+        "service_name",
+        "service_account_email",
+        "allow_public_invocation"
       ],
       "creation_guard": "SHOWCASE_ALLOW_CREATE_CLOUD_RUN_SERVICE",
       "public_invocation_guard": "SHOWCASE_ALLOW_PUBLIC_INVOCATION",
@@ -61,6 +80,7 @@
     "previous_revision_or_release",
     "new_revision_or_release",
     "service_url",
+    "plan_sha256",
     "smoke_receipt_sha256",
     "rollback_command",
     "rollback_readback",
@@ -68,9 +88,10 @@
   ],
   "prohibited": [
     "credentials in repository, chat, pull requests, artifacts, or logs",
-    "provider execution from public GitHub Actions",
+    "real provider plan or apply from public GitHub Actions",
     "unreviewed resource creation",
     "unreviewed IAM or public access changes",
+    "project, billing, API, repository, service account, or state backend ownership",
     "private evidence or camera input",
     "persistent hosted evidence authority",
     "production, availability, durability, scale, or fleet claims"

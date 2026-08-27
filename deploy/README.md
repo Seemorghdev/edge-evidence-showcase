@@ -3,30 +3,49 @@
 This directory prepares deployment without carrying credentials or provider identity.
 The repository is not an execution authority. A human-approved local credentialed
 executor performs provider calls only after the exact coordinates, cost boundary, IAM
-decision, image digest, and rollback target are frozen.
+decision, image digest, state location, and rollback target are frozen.
 
 ## Current stage
 
-The current stage is **credential-free planning**. No live deployment, resource
-creation, public URL, hosted smoke proof, availability claim, or production claim is
-implied by these files.
+The current stage is **service-owned Terraform planning**. No real provider plan,
+resource creation, public URL, hosted smoke proof, availability claim, or production
+claim is implied by these files.
 
-The public GitHub Actions surface validates syntax and this contract only. It has no
-OIDC permission, provider secret, provider login, resource creation, deployment, or
-rollback step.
+The public GitHub Actions surface validates syntax, the deployment contract, the
+service-owned Cloud Run configuration, mocked Terraform plan tests, and policy
+fixtures. It has no OIDC permission, provider secret, provider login, Google API plan,
+resource creation, deployment, rollback, or provider smoke step.
+
+The Terraform example and exact local-executor packet are under:
+
+```text
+infra/cloud-run/
+infra/cloud-run/EXECUTION_PACKET.md
+```
 
 ## Required local tools
 
 - Bash
 - Python 3.12 or newer
+- Terraform 1.16.0
 - Docker with `linux/amd64` build support
-- `gcloud` for the approved Cloud Run execution
-- `curl` for the approved Heroku execution and smoke readback
+- `gcloud` for an approved Cloud Run execution
+- `curl` for an approved Heroku execution and smoke readback
 
-Run the offline repository checks first:
+Run the credential-free repository checks first:
 
 ```bash
 ./deploy/preflight.sh --offline
+```
+
+The Cloud Run Terraform directory can also be validated without credentials:
+
+```bash
+terraform -chdir=infra/cloud-run init -backend=false -input=false
+terraform -chdir=infra/cloud-run fmt -check -recursive
+terraform -chdir=infra/cloud-run validate
+terraform -chdir=infra/cloud-run test -no-color
+python3 infra/cloud-run/policy/check_source.py
 ```
 
 After owner approval and only on the local credentialed executor, run:
@@ -40,7 +59,20 @@ credential files, account inventories, or full environment dumps.
 
 ## Configuration names
 
-Cloud Run execution uses:
+The service-owned Terraform packet freezes these non-secret coordinates:
+
+```text
+project_id
+region
+artifact_registry_repository
+image_name
+image_digest
+service_name
+service_account_email
+allow_public_invocation
+```
+
+Cloud Run script execution uses:
 
 ```text
 GCP_PROJECT_ID
@@ -85,9 +117,15 @@ and Heroku must receive the same image bytes.
 
 ## Cloud Run execution boundary
 
-`deploy/cloud-run.sh IMAGE_URI` deploys only after the two execution guards are set.
-It reads the project, region, and service from environment variables. If the service
-does not already exist, it stops unless
+`infra/cloud-run/` manages only the named Cloud Run v2 service and the optional
+non-authoritative `allUsers` invoker member. It does not own project, billing, API,
+repository, image, runtime identity, state backend, network, domain, or observability
+resources. Its real plan and apply commands are documented but intentionally not run by
+public CI.
+
+`deploy/cloud-run.sh IMAGE_URI` remains a guarded imperative alternative. It deploys
+only after the two execution guards are set. It reads the project, region, and service
+from environment variables. If the service does not already exist, it stops unless
 `SHOWCASE_ALLOW_CREATE_CLOUD_RUN_SERVICE=1` is present in the approved packet.
 Unauthenticated invocation is not changed unless
 `SHOWCASE_ALLOW_PUBLIC_INVOCATION=1` is explicitly approved.
@@ -102,16 +140,6 @@ gcloud run services describe "$GCP_CLOUD_RUN_SERVICE" \
 
 After execution, repeat the readback and record the new revision, image digest, traffic,
 URL, health result, and rollback command.
-
-Rollback uses an exact previously recorded ready revision:
-
-```bash
-gcloud run services update-traffic "$GCP_CLOUD_RUN_SERVICE" \
-  --project="$GCP_PROJECT_ID" --region="$GCP_REGION" \
-  --to-revisions="PREVIOUS_REVISION=100"
-```
-
-Do not guess a revision name. Read back traffic and health after rollback.
 
 ## Heroku execution boundary
 
@@ -147,13 +175,14 @@ sha256sum deployment-smoke.json
 ```
 
 The receipt must bind the source commit/tree, immutable image digest, provider resource
-identities, previous and new revisions/releases, URLs, smoke digest, cost boundary, and
-rollback readback. Sanitize account identifiers and any provider coordinates not
-approved for public disclosure.
+identities, previous and new revisions/releases, URLs, plan and smoke digests, cost
+boundary, and rollback readback. Sanitize account identifiers and any provider
+coordinates not approved for public disclosure.
 
 ## Stop conditions
 
-Stop before a provider write when any approved coordinate changed, the image digest is
-not exact, a required resource would be created without approval, public IAM would
-change without approval, the cost boundary is absent, rollback identity is absent, or
-a command would expose a credential.
+Stop before a provider plan or write when any approved coordinate changed, the image
+digest is not exact, state retention is unresolved, a required resource would be
+created without approval, public IAM would change without approval, the plan contains
+deletion/replacement or resources outside the allowlist, the cost boundary is absent,
+rollback identity is absent, or a command would expose a credential.

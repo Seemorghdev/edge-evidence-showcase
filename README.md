@@ -87,26 +87,35 @@ authority.
 ## Credential-free deployment preparation
 
 `.github/workflows/deployment-readiness.yml` validates the sanitized deployment
-contract, guarded scripts, shell syntax, and offline preflight. It has read-only
-repository permission and performs no provider authentication, image push, resource
+contract, guarded scripts, shell syntax, service-owned Cloud Run Terraform, mocked
+provider plan tests, and source/plan policies. It has read-only repository permission
+and performs no provider authentication, Google API plan, image push, resource
 creation, IAM change, deployment, rollback, or provider smoke.
 
-The Cloud Run and Heroku commands are retained under `deploy/` for an approved local
-credentialed executor. Both scripts require explicit approval and local-executor guard
-variables. Cloud Run additionally requires an immutable image digest and separate
-creation/public-invocation guards. Heroku requires a pre-existing container-stack app
-and never creates one.
+The Terraform example under `infra/cloud-run/` owns only one Cloud Run v2 service and,
+when explicitly approved, one non-authoritative public invoker member. It uses an
+existing project, repository, immutable image digest, and runtime service account. It
+does not create account-level foundation, billing, APIs, state backends, identities, or
+secrets.
 
 Run the credential-free checks with:
 
 ```bash
 python3 scripts/validate_deployment_contract.py
 ./deploy/preflight.sh --offline
+terraform -chdir=infra/cloud-run init -backend=false -input=false
+terraform -chdir=infra/cloud-run validate
+terraform -chdir=infra/cloud-run test -no-color
+python3 infra/cloud-run/policy/check_source.py
 ```
 
-See `deploy/README.md` for configuration names, preflight, image identity, exact smoke,
-evidence, stop conditions, and rollback procedures. Live URLs and deployment badges
-are intentionally absent because no hosted deployment has been executed or verified.
+See `infra/cloud-run/EXECUTION_PACKET.md` for required non-secret coordinates,
+authentication prerequisites, exact plan/apply commands, expected diff, smoke,
+evidence, stop conditions, and rollback. See `deploy/README.md` for the wider
+Cloud Run and Heroku execution boundary.
+
+Live URLs and deployment badges are intentionally absent because no hosted deployment
+has been executed or verified.
 
 ## Boundaries
 
@@ -114,6 +123,7 @@ are intentionally absent because no hosted deployment has been executed or verif
 - No request-supplied evidence or camera access.
 - No credentials or external provider call from the synthetic workload.
 - No credential-bearing provider execution from public GitHub Actions.
+- No real Terraform provider plan or apply from public GitHub Actions.
 - No ADK execution, model call, or autonomous loop.
 - No Ollama.
 - No production, availability, performance, fleet, or physical-storage claim.
@@ -131,7 +141,8 @@ coordinates, retained evidence, or personal data. See `SECURITY.md` and
 
 License: **MIT**.
 
-The presence of deployment contracts or scripts does not authorize third-party
-provider writes. Provider credentials, billable resources, IAM/public access, exact
-coordinates, cost ceilings, and live execution remain separate owner-approved actions
-performed only by the approved local credentialed executor.
+The presence of deployment contracts, Terraform, or scripts does not authorize
+third-party provider writes. Provider credentials, billable resources, IAM/public
+access, exact coordinates, cost ceilings, state ownership, and live execution remain
+separate owner-approved actions performed only by the approved local credentialed
+executor.

@@ -1,0 +1,68 @@
+{
+  "format_version": "1.2",
+  "resource_changes": [
+    {
+      "address": "google_cloud_run_v2_service.showcase",
+      "change": {
+        "actions": [
+          "create"
+        ],
+        "after": {
+          "deletion_protection": true,
+          "ingress": "INGRESS_TRAFFIC_ALL",
+          "location": "europe-west1",
+          "name": "edge-evidence-showcase",
+          "project": "example-project",
+          "template": [
+            {
+              "containers": [
+                {
+                  "image": "europe-west1-docker.pkg.dev/example-project/example-showcase-images/showcase@sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+                  "resources": [
+                    {
+                      "limits": {
+                        "cpu": "1",
+                        "memory": "512Mi"
+                      }
+                    }
+                  ]
+                }
+              ],
+              "max_instance_request_concurrency": 1,
+              "scaling": [
+                {
+                  "max_instance_count": 3,
+                  "min_instance_count": 0
+                }
+              ],
+              "service_account": "showcase-runtime\u0040example-project.iam.gserviceaccount.com",
+              "timeout": "120s"
+            }
+          ]
+        }
+      },
+      "mode": "managed",
+      "name": "showcase",
+      "type": "google_cloud_run_v2_service"
+    },
+    {
+      "address": "google_cloud_run_v2_service_iam_member.public_invoker[0]",
+      "change": {
+        "actions": [
+          "create"
+        ],
+        "after": {
+          "location": "europe-west1",
+          "member": "allUsers",
+          "name": "edge-evidence-showcase",
+          "project": "example-project",
+          "role": "roles/run.invoker"
+        }
+      },
+      "index": 0,
+      "mode": "managed",
+      "name": "public_invoker",
+      "type": "google_cloud_run_v2_service_iam_member"
+    }
+  ]
+}

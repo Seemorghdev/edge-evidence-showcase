@@ -8,16 +8,46 @@ on:
 permissions:
   contents: read
 
+env:
+  TF_IN_AUTOMATION: "1"
+
 jobs:
   validate:
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 15
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
+      - uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: "1.16.0"
+          terraform_wrapper: false
       - name: Validate deployment contract and execution boundary
         run: python3 scripts/validate_deployment_contract.py
       - name: Run credential-free local preflight
         run: bash deploy/preflight.sh --offline
+      - name: Validate service-owned Cloud Run Terraform
+        run: |
+          set -euo pipefail
+          terraform -chdir=infra/cloud-run fmt -check -recursive
+          terraform -chdir=infra/cloud-run init -backend=false -input=false
+          terraform -chdir=infra/cloud-run validate
+          terraform -chdir=infra/cloud-run test -no-color
+      - name: Enforce Terraform source and plan policies
+        run: |
+          set -euo pipefail
+          python3 infra/cloud-run/policy/check_source.py
+          python3 infra/cloud-run/policy/check_plan.py \
+            infra/cloud-run/policy/fixtures/private-plan.json \
+            --expect-public false
+          python3 infra/cloud-run/policy/check_plan.py \
+            infra/cloud-run/policy/fixtures/public-plan.json \
+            --expect-public true
+          if python3 infra/cloud-run/policy/check_plan.py \
+            infra/cloud-run/policy/fixtures/destructive-plan.json \
+            --expect-public false >/dev/null 2>&1; then
+            echo "destructive plan fixture unexpectedly passed policy" >&2
+            exit 1
+          fi
