@@ -24,7 +24,7 @@ These commands download the pinned provider schema but make no Google API call a
 require no credentials:
 
 ```bash
-terraform init -backend=false -input=false
+terraform init -backend=false -input=false -lockfile=readonly
 terraform fmt -check -recursive
 terraform validate
 terraform test -no-color

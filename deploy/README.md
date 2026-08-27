@@ -41,7 +41,7 @@ Run the credential-free repository checks first:
 The Cloud Run Terraform directory can also be validated without credentials:
 
 ```bash
-terraform -chdir=infra/cloud-run init -backend=false -input=false
+terraform -chdir=infra/cloud-run init -backend=false -input=false -lockfile=readonly
 terraform -chdir=infra/cloud-run fmt -check -recursive
 terraform -chdir=infra/cloud-run validate
 terraform -chdir=infra/cloud-run test -no-color

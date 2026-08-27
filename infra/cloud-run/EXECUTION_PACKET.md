@@ -90,7 +90,7 @@ API call, creates no backend, and requires no Google credentials.
 ```bash
 terraform version
 test "$(terraform version -json | python3 -c 'import json,sys; print(json.load(sys.stdin)["terraform_version"])')" = "1.16.0"
-terraform init -backend=false -input=false
+terraform init -backend=false -input=false -lockfile=readonly
 terraform fmt -check -recursive
 terraform validate
 terraform test -no-color
@@ -137,7 +137,7 @@ These commands are prepared for the local executor but are not run by repository
 set -euo pipefail
 umask 077
 gcloud auth application-default print-access-token >/dev/null
-terraform init -input=false -upgrade=false
+terraform init -input=false -upgrade=false -lockfile=readonly
 terraform validate
 terraform plan \
   -input=false \
