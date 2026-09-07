@@ -17,8 +17,8 @@ flowchart TB
     RH --> RT[Verified deterministic local replica]
     S --> CS[Combined summary + inspection]
 
-    REF[Reference platform] -->|release-pinned worker contracts + outputs| PP
-    REF -->|release-pinned worker contracts + outputs| RP
+    PP -->|release-pinned worker contracts + outputs| REF[Reference platform]
+    RP -->|release-pinned worker contracts + outputs| REF
     REF --> CLOUD[Cloud Run / Terraform / Kubernetes / GKE evidence track]
 
     HTTP[Read-only synthetic HTTP adapter] --> S
