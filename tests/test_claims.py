@@ -16,6 +16,8 @@ def test_claims_freeze_integrated_synthetic_scope() -> None:
         "C04",
         "C05",
         "C06",
+        "C07",
+        "C08",
     ]
     by_id = {item["id"]: item for item in claims["claims"]}
     assert by_id["C04"]["status"] == "synthetic-only"
@@ -25,6 +27,13 @@ def test_claims_freeze_integrated_synthetic_scope() -> None:
     assert "not deployment authority" in by_id["C05"]["statement"]
     assert by_id["C06"]["status"] == "limitation"
     assert "is not physical NAS" in by_id["C06"]["statement"]
+    assert by_id["C07"]["status"] == "cross-repo-private-evidence"
+    assert "accepted zero-mutation GKE external-exposure observation" in by_id["C07"]["statement"]
+    assert "private provider coordinates" in by_id["C07"]["statement"]
+    assert by_id["C08"]["status"] == "limitation"
+    assert "DNS" in by_id["C08"]["statement"]
+    assert "TLS/HTTPS" in by_id["C08"]["statement"]
+    assert "production availability" in by_id["C08"]["statement"]
     prohibited = " ".join(claims["prohibited"]).lower()
     for marker in (
         "production",
@@ -33,6 +42,10 @@ def test_claims_freeze_integrated_synthetic_scope() -> None:
         "persistent hosted evidence authority",
         "independent provider",
         "scheduler operations",
+        "dns",
+        "tls/https",
+        "private topology",
+        "terraform state",
         "exact private claim/action/worker/sqlite counts",
     ):
         assert marker in prohibited
