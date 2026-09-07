@@ -2,21 +2,33 @@
 
 This repository is the **generated presentation and synthetic integration surface** for
 the Edge Evidence portfolio. It is not the implementation authority for processor,
-replication, or the reference platform.
+replication, the reference platform, infrastructure, or operations.
 
 ## 30-second portfolio map
 
-| Surface | What it owns | Where to go |
+| Canonical surface | What it owns | Current publication state |
 | --- | --- | --- |
-| Processor worker | Deterministic bounded processing catch-up over existing SQLite/filesystem authority | [`edge-evidence-processor-worker`](https://github.com/Seemorghdev/edge-evidence-processor-worker) |
-| Replication worker | Deterministic convergence of finalized immutable objects into an already-bound replica target | [`edge-evidence-replication-worker`](https://github.com/Seemorghdev/edge-evidence-replication-worker) |
-| Reference platform | End-to-end services, integration, Terraform, Kubernetes/GKE delivery, and cloud evidence | `edge-evidence-reference-platform` — currently private; public publication is pending |
-| This showcase | Synthetic processor → replication handoff, runnable demos, claim boundaries, and recruiter-facing navigation | You are here |
+| Processor | Deterministic evidence processing, checkpoint/recovery semantics, lineage verification, and replay-safe processing contracts | `edge-evidence-processor` — currently private; public publication is pending |
+| Replication | Immutable replication of finalized evidence, independent readback verification, collision refusal, and replay-safe replication contracts | `edge-evidence-replication` — currently private; public publication is pending |
+| Reference Platform | User-facing/application services and cloud-application integration built from release-pinned component contracts | `edge-evidence-reference-platform` — currently private; public publication is pending |
+| Infrastructure | Generalized cloud/platform desired state — what reviewed platform state should exist, without execution authority | [`edge-evidence-infrastructure`](https://github.com/Seemorghdev/edge-evidence-infrastructure) — currently public |
+| Operations | Controlled execution and evidence governance — how reviewed humans/automation may inspect or change state | `edge-evidence-operations` — currently private; public publication is pending |
+| Showcase | Generated portfolio navigation, synthetic integration, reproducibility, and public claim boundaries | You are here; this repository is currently public |
 
-The two public worker repositories are themselves generated products from private
-canonical sources. Authoritative worker corrections remain upstream-first. This bundle
-includes exact generated worker products for the integrated synthetic demo; do not treat
-`components/` as a fourth implementation authority.
+Repository visibility describes **publication state only**. It is not a readiness,
+completeness, production, or authority signal: private does not mean unready, and public
+does not make a repository cloud/deployment authority.
+
+### Legacy generated worker exports
+
+[`edge-evidence-processor-worker`](https://github.com/Seemorghdev/edge-evidence-processor-worker)
+and
+[`edge-evidence-replication-worker`](https://github.com/Seemorghdev/edge-evidence-replication-worker)
+remain public **legacy generated/export surfaces**. They have not disappeared, and this
+bundle still includes their exact generated worker products for the integrated synthetic
+demo. The canonical current component-product repository surfaces are
+`edge-evidence-processor` and `edge-evidence-replication`; do not redirect canonical
+implementation authority to the legacy worker repositories or to `components/`.
 
 ## What Project 03 demonstrates
 
@@ -25,14 +37,18 @@ large process with hidden authority:
 
 1. the **processor** freezes eligible work, resumes deterministic checkpoints, verifies
    derived output and lineage, and remains safe under exact replay;
-2. the **replication worker** adopts or immutably creates target objects, independently
-   reads them back, refuses collisions, and converges safely under exact replay;
-3. this **showcase** proves a verified synthetic processor report can cross the process
+2. **replication** adopts or immutably creates target objects, independently reads them
+   back, refuses collisions, and converges safely under exact replay;
+3. the **reference platform** composes the separate application and cloud-integration
+   services that consume release-pinned processor/replication contracts and outputs;
+4. **infrastructure** is the separate desired-state surface: it describes what reviewed
+   cloud/platform state should exist, not who is authorized to change it;
+5. **operations** is the separate controlled-execution/evidence-governance surface: it
+   describes how reviewed humans or automation may inspect or change state under explicit
+   controls, without becoming infrastructure desired-state authority;
+6. this **showcase** proves a verified synthetic processor report can cross the process
    boundary into replication byte-for-byte without importing both worker runtimes into
-   one Python process;
-4. the **reference platform** is the separate application/cloud integration track. Its
-   accepted evidence includes bounded Cloud Run proof and a later GKE external-exposure
-   observation, while final public DNS/HTTPS naming remains pending.
+   one Python process, and gives reviewers one place to navigate the portfolio.
 
 The demos here are synthetic. They are useful because they exercise the real exported
 worker behavior and failure boundaries without publishing private evidence, credentials,
@@ -44,6 +60,11 @@ This showcase is generated from private canonical source (identity withheld). Au
 corrections are made at that source and regenerated here. `BUNDLE_MANIFEST.json` and the
 component `EXPORT_PROVENANCE.json` files bind the generated worker candidates and their
 public-safe content identities.
+
+The canonical six-surface portfolio map is **navigation**, not bundle composition.
+`PUBLIC_COMPONENTS.json` keeps those concepts separate: the bundled legacy generated
+worker exports remain the runnable demo components, while the canonical surface inventory
+records current repository names and publication visibility.
 
 The generated bundle contains no credentials, private proof payloads, camera source, or
 persistent-authority configuration. Deployment adapters remain manual and require a
@@ -74,12 +95,13 @@ receipts, filesystem paths, and SHA-256 identities.
 
 For a technical walkthrough, start with:
 
-- [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) — how processor, replication, showcase,
-  and the reference platform relate;
+- [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) — how the six canonical portfolio
+  surfaces, legacy generated worker exports, and this generated bundle relate;
 - [`docs/CLAIMS-AND-LIMITATIONS.md`](docs/CLAIMS-AND-LIMITATIONS.md) — what the demos and
   cloud evidence do and do not prove;
 - [`PUBLIC_CLAIMS.json`](PUBLIC_CLAIMS.json) — machine-readable public claim boundary;
-- [`PUBLIC_COMPONENTS.json`](PUBLIC_COMPONENTS.json) — generated component inventory;
+- [`PUBLIC_COMPONENTS.json`](PUBLIC_COMPONENTS.json) — bundled generated components plus
+  canonical portfolio-navigation inventory;
 - [`docs/REPRODUCIBILITY.md`](docs/REPRODUCIBILITY.md) — bundle verification and
   deterministic regeneration expectations.
 

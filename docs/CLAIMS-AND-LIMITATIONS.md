@@ -1,9 +1,30 @@
 # Claims and limitations
 
-This page separates three proof classes that should not be conflated: generated worker
-reliability, the local integrated synthetic demo, and accepted cloud observations.
+This page separates portfolio navigation from evidence claims, then separates three proof
+classes that should not be conflated: generated worker reliability, the local integrated
+synthetic demo, and accepted cloud observations.
 
-## Supported by the public worker/showcase products
+## Portfolio navigation is not an evidence claim
+
+The canonical repository surfaces are:
+
+- Processor — `edge-evidence-processor`, currently private;
+- Replication — `edge-evidence-replication`, currently private;
+- Reference Platform — `edge-evidence-reference-platform`, currently private;
+- Infrastructure — `edge-evidence-infrastructure`, currently public;
+- Operations — `edge-evidence-operations`, currently private;
+- Showcase — `edge-evidence-showcase`, currently public.
+
+Visibility records publication state only. Private does not mean unready, public does not
+mean complete, and neither visibility state grants implementation, infrastructure,
+operations, deployment, or cloud authority.
+
+The still-public `edge-evidence-processor-worker` and
+`edge-evidence-replication-worker` repositories are legacy generated/export surfaces.
+They remain relevant to the bundled synthetic demo and its provenance, but they are not
+the canonical current Processor or Replication component-product repositories.
+
+## Supported by the generated worker exports/showcase bundle
 
 - Separately generated and separately installed processor and replication workers.
 - Processor normal processing, committed resume, lock defer/retry, and replay proofs.
@@ -42,6 +63,8 @@ reliability, the local integrated synthetic demo, and accepted cloud observation
 - Publication of provider coordinates, private topology, credentials, Terraform state, or
   retained private evidence payloads.
 
-The reference-platform repository is currently private. Until its public release is
-separately approved, this showcase summarizes accepted cross-repository evidence without
-copying private coordinates or inventing a public evidence link.
+The Reference Platform, Processor, Replication, and Operations repositories are currently
+private. Until their public release is separately approved, this showcase names those
+canonical surfaces without fabricating public links. Infrastructure and Showcase are
+currently public, but that visibility does not add readiness, cloud-authority, production,
+or evidence claims.

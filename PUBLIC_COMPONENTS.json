@@ -4,13 +4,13 @@
       "bundle_path": "components/processor-worker",
       "installation": ".venv/processor",
       "name": "processor-worker",
-      "role": "bounded deterministic processing reliability product"
+      "role": "bounded deterministic processing reliability generated export"
     },
     {
       "bundle_path": "components/replication-worker",
       "installation": ".venv/replication",
       "name": "replication-worker",
-      "role": "bounded deterministic local replication convergence product"
+      "role": "bounded deterministic local replication convergence generated export"
     },
     {
       "bundle_path": ".",
@@ -19,7 +19,64 @@
       "role": "subprocess orchestration, receipt validation, inspection, and cleanup"
     }
   ],
-  "composition": "Generated workers are bundled from their independent export products and installed into separate environments.",
+  "composition": "Legacy generated worker exports remain bundled for the deterministic demo; canonical portfolio navigation is recorded separately and does not change implementation authority.",
+  "portfolio_surfaces": [
+    {
+      "name": "processor",
+      "repository": "edge-evidence-processor",
+      "role": "deterministic evidence processing component product",
+      "visibility": "private",
+      "public_url": null
+    },
+    {
+      "name": "replication",
+      "repository": "edge-evidence-replication",
+      "role": "immutable finalized-evidence replication and independent verification component product",
+      "visibility": "private",
+      "public_url": null
+    },
+    {
+      "name": "reference-platform",
+      "repository": "edge-evidence-reference-platform",
+      "role": "flagship application and cloud-integration surface",
+      "visibility": "private",
+      "public_url": null
+    },
+    {
+      "name": "infrastructure",
+      "repository": "edge-evidence-infrastructure",
+      "role": "generalized cloud and platform desired-state surface",
+      "visibility": "public",
+      "public_url": "https://github.com/Seemorghdev/edge-evidence-infrastructure"
+    },
+    {
+      "name": "operations",
+      "repository": "edge-evidence-operations",
+      "role": "generalized controlled-execution and evidence-governance surface",
+      "visibility": "private",
+      "public_url": null
+    },
+    {
+      "name": "showcase",
+      "repository": "edge-evidence-showcase",
+      "role": "generated public presentation, synthetic integration, reproducibility, and claim navigation",
+      "visibility": "public",
+      "public_url": "https://github.com/Seemorghdev/edge-evidence-showcase"
+    }
+  ],
+  "legacy_public_exports": [
+    {
+      "name": "processor-worker",
+      "repository": "edge-evidence-processor-worker",
+      "relationship": "public legacy generated/export surface used by the bundled synthetic demo; not the canonical processor component-product repository"
+    },
+    {
+      "name": "replication-worker",
+      "repository": "edge-evidence-replication-worker",
+      "relationship": "public legacy generated/export surface used by the bundled synthetic demo; not the canonical replication component-product repository"
+    }
+  ],
   "schema": "edge-evidence-public-components.v2",
-  "source_policy": "Generated public products; authoritative corrections are upstream-first."
+  "source_policy": "Generated public products; authoritative corrections are upstream-first.",
+  "visibility_policy": "Repository visibility records publication state only; it does not assert readiness, completeness, production status, or execution authority."
 }
