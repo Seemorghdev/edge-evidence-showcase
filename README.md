@@ -1,16 +1,55 @@
-# Edge Evidence Integrated Showcase
+# Edge Evidence — Project 03 Integrated Showcase
 
-This generated product runs the generated processor worker and generated replication
-worker as separately installed local packages. It demonstrates a verified processor
-report flowing into deterministic local replication without importing both workers
-into one Python process.
+This repository is the **generated presentation and synthetic integration surface** for
+the Edge Evidence portfolio. It is not the implementation authority for processor,
+replication, or the reference platform.
 
-The showcase is generated from private canonical source (identity withheld). Authoritative corrections are
-upstream-first. The generated bundle contains no credentials, private proof material,
-camera source, or persistent-authority configuration. Its deployment adapters remain
-manual and require a separately approved local credentialed executor.
+## 30-second portfolio map
 
-## One-command experience
+| Surface | What it owns | Where to go |
+| --- | --- | --- |
+| Processor worker | Deterministic bounded processing catch-up over existing SQLite/filesystem authority | [`edge-evidence-processor-worker`](https://github.com/Seemorghdev/edge-evidence-processor-worker) |
+| Replication worker | Deterministic convergence of finalized immutable objects into an already-bound replica target | [`edge-evidence-replication-worker`](https://github.com/Seemorghdev/edge-evidence-replication-worker) |
+| Reference platform | End-to-end services, integration, Terraform, Kubernetes/GKE delivery, and cloud evidence | `edge-evidence-reference-platform` — currently private; public publication is pending |
+| This showcase | Synthetic processor → replication handoff, runnable demos, claim boundaries, and recruiter-facing navigation | You are here |
+
+The two public worker repositories are themselves generated products from private
+canonical sources. Authoritative worker corrections remain upstream-first. This bundle
+includes exact generated worker products for the integrated synthetic demo; do not treat
+`components/` as a fourth implementation authority.
+
+## What Project 03 demonstrates
+
+The portfolio demonstrates a deliberately separated evidence pipeline rather than one
+large process with hidden authority:
+
+1. the **processor** freezes eligible work, resumes deterministic checkpoints, verifies
+   derived output and lineage, and remains safe under exact replay;
+2. the **replication worker** adopts or immutably creates target objects, independently
+   reads them back, refuses collisions, and converges safely under exact replay;
+3. this **showcase** proves a verified synthetic processor report can cross the process
+   boundary into replication byte-for-byte without importing both worker runtimes into
+   one Python process;
+4. the **reference platform** is the separate application/cloud integration track. Its
+   accepted evidence includes bounded Cloud Run proof and a later GKE external-exposure
+   observation, while final public DNS/HTTPS naming remains pending.
+
+The demos here are synthetic. They are useful because they exercise the real exported
+worker behavior and failure boundaries without publishing private evidence, credentials,
+camera details, provider coordinates, or persistent evidence authority.
+
+## Authority model and provenance
+
+This showcase is generated from private canonical source (identity withheld). Authoritative presentation
+corrections are made at that source and regenerated here. `BUNDLE_MANIFEST.json` and the
+component `EXPORT_PROVENANCE.json` files bind the generated worker candidates and their
+public-safe content identities.
+
+The generated bundle contains no credentials, private proof payloads, camera source, or
+persistent-authority configuration. Deployment adapters remain manual and require a
+separately approved credentialed executor.
+
+## Fast local tour
 
 In a Codespace or the provided development container:
 
@@ -22,25 +61,36 @@ make test
 make clean
 ```
 
-`setup.sh` verifies the generated component digests and installs the two worker
-products into separate virtual environments:
+`setup.sh` verifies the generated component digests and installs the workers into
+separate virtual environments:
 
 ```text
 .venv/processor/
 .venv/replication/
 ```
 
-The showcase orchestrator communicates with them only through subprocess status,
-JSON receipts, filesystem paths, and SHA-256 identities.
+The showcase orchestrator communicates with them only through subprocess status, JSON
+receipts, filesystem paths, and SHA-256 identities.
+
+For a technical walkthrough, start with:
+
+- [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) — how processor, replication, showcase,
+  and the reference platform relate;
+- [`docs/CLAIMS-AND-LIMITATIONS.md`](docs/CLAIMS-AND-LIMITATIONS.md) — what the demos and
+  cloud evidence do and do not prove;
+- [`PUBLIC_CLAIMS.json`](PUBLIC_CLAIMS.json) — machine-readable public claim boundary;
+- [`PUBLIC_COMPONENTS.json`](PUBLIC_COMPONENTS.json) — generated component inventory;
+- [`docs/REPRODUCIBILITY.md`](docs/REPRODUCIBILITY.md) — bundle verification and
+  deterministic regeneration expectations.
 
 ## What `make demo` proves
 
-The processor product runs its normal, committed-resume, and busy-lock reliability
-scenarios. The replication product runs its target lifecycle, adoption, immutable
-create, readback, cleanup, rerun, and collision-refusal scenarios. The integrated
-handoff then takes the processor's verified derived report bytes and publishes those
-same bytes into a fresh local replication target, independently verifies the target,
-and proves an exact rerun performs no new write.
+The processor product runs normal, committed-resume, and busy-lock reliability
+scenarios. The replication product runs target lifecycle, adoption, immutable create,
+readback, cleanup, rerun, and collision-refusal scenarios. The integrated handoff then
+takes the processor's verified derived report bytes and publishes those same bytes into
+a fresh local replication target, independently verifies the target, and proves an exact
+rerun performs no new write.
 
 All state remains inspectable under `.demo-output/`:
 
@@ -55,7 +105,7 @@ All state remains inspectable under `.demo-output/`:
 `make inspect` is read-only. `make clean` removes only a guarded `.demo-output` path
 inside this repository.
 
-## Container execution
+## Container demonstration
 
 Build the canonical runtime image from the generated bundle. The default command is a
 read-only HTTP adapter that accepts no body, query input, evidence, or camera source:
@@ -71,8 +121,8 @@ curl --fail http://127.0.0.1:8080/api/demo
 ```
 
 Each instance runs the deterministic synthetic workload at most once, caches only its
-public summary in memory, and removes its temporary output. The original batch-style
-container commands remain available explicitly:
+public summary in memory, and removes its temporary output. Batch-style execution remains
+available explicitly:
 
 ```bash
 docker run --rm --network none \
@@ -80,25 +130,33 @@ docker run --rm --network none \
   edge-evidence-showcase:local demo
 ```
 
-The runtime uses a non-root user. Container-local files, SQLite databases, and
-in-memory summaries are demonstration state only and are not persistent evidence
-authority.
+Container-local files, SQLite databases, and in-memory summaries are demonstration state
+only and are not persistent evidence authority.
 
-## Credential-free deployment preparation
+## Cloud evidence — proven versus pending
 
-`.github/workflows/deployment-readiness.yml` validates the sanitized deployment
-contract, guarded scripts, shell syntax, service-owned Cloud Run Terraform, mocked
-provider plan tests, and source/plan policies. It has read-only repository permission
-and performs no provider authentication, Google API plan, image push, resource
-creation, IAM change, deployment, rollback, or provider smoke.
+Cloud evidence is intentionally separated from the local synthetic proof.
 
-The Terraform example under `infra/cloud-run/` owns only one Cloud Run v2 service and,
-when explicitly approved, one non-authoritative public invoker member. It uses an
-existing project, repository, immutable image digest, and runtime service account. It
-does not create account-level foundation, billing, APIs, state backends, identities, or
-secrets.
+**Proven Cloud Run boundary.** An owner-authorized, authenticated-only Cloud Run deployment
+in a disposable environment of the exact immutable showcase image completed provider
+readback and the synthetic smoke path. The live URL, project, identity, state, and retained
+evidence coordinates remain private. This grants no deployment authority and proves only
+a bounded deployment/smoke event, not production availability or persistent hosted
+evidence authority.
 
-Run the credential-free checks with:
+**Proven GKE boundary.** The separate reference-platform evidence track has an accepted,
+zero-mutation GKE external-exposure observation that verified the reviewed synthetic
+three-service workload and bounded same-origin HTTP journey under a stable provider state.
+Private provider coordinates and retained evidence are intentionally not copied here.
+
+**Still pending.** Stable public-address ownership/binding, final DNS naming,
+ManagedCertificate/TLS/HTTPS transition, production availability, performance, scale,
+SLOs, and physical evidence integration are outside the accepted public claim boundary.
+No temporary endpoint is published from this repository.
+
+The Cloud Run Terraform and deployment scripts in this repository are therefore best read
+as a **bounded showcase adapter and historical proof surface**, not as the current cloud
+architecture authority. Credential-free validation remains available with:
 
 ```bash
 python3 scripts/validate_deployment_contract.py
@@ -109,28 +167,33 @@ terraform -chdir=infra/cloud-run test -no-color
 python3 infra/cloud-run/policy/check_source.py
 ```
 
-See `infra/cloud-run/EXECUTION_PACKET.md` for required non-secret coordinates,
-authentication prerequisites, exact plan/apply commands, expected diff, smoke,
-evidence, stop conditions, and rollback. See `deploy/README.md` for the wider
-Cloud Run and Heroku execution boundary.
+Public GitHub Actions perform no provider authentication, live Terraform plan/apply,
+image push, resource creation, IAM change, deployment, rollback, or provider smoke.
 
-A disposable, authenticated-only Cloud Run deployment of an exact immutable image has
-completed provider readback and synthetic smoke verification. The live URL, project,
-identity, state, and private evidence coordinates remain intentionally absent. This
-public repository still carries no credentials and grants no deployment authority.
+## Engineering signals worth reviewing
 
-## Boundaries
+- deterministic, idempotent worker state transitions with explicit replay semantics;
+- checkpointed processor recovery and fail-closed lock behavior;
+- immutable replication with independent readback and collision refusal;
+- cross-process integration through receipts, paths, sizes, and digests rather than
+  shared runtime imports;
+- generated-product provenance with upstream-first authority and reproducible candidates;
+- bounded cloud-operation contracts that separate review, authorization, execution,
+  verification, and retained evidence.
 
-- Synthetic inputs only.
+## Claim boundary
+
+- Synthetic inputs only in this public showcase.
 - No request-supplied evidence or camera access.
 - No credentials or external provider call from the synthetic workload.
 - No credential-bearing provider execution from public GitHub Actions.
 - No real Terraform provider plan or apply from public GitHub Actions.
-- No ADK execution, model call, or autonomous loop.
-- No Ollama.
-- No production, availability, performance, fleet, or physical-storage claim.
+- No ADK execution, model call, autonomous loop, or Ollama claim here.
+- No production, availability, performance, fleet, SLO, or physical-storage claim.
 - No persistent hosted evidence authority.
-- GKE, Helm, Datadog, custom domains, and physical integration are out of scope.
+- No publication of private topology, provider coordinates, retained evidence payloads,
+  footage, camera details, credentials, or Terraform state.
+- Final DNS/HTTPS naming remains pending.
 
 ## Security and contributions
 
@@ -143,8 +206,7 @@ coordinates, retained evidence, or personal data. See `SECURITY.md` and
 
 License: **MIT**.
 
-The presence of deployment contracts, Terraform, or scripts does not authorize
-third-party provider writes. Provider credentials, billable resources, IAM/public
-access, exact coordinates, cost ceilings, state ownership, and live execution remain
-separate owner-approved actions performed only by the approved local credentialed
-executor.
+The presence of deployment contracts, Terraform, Kubernetes/GKE evidence references, or
+scripts does not authorize third-party provider writes. Credentials, billable resources,
+IAM/public access, exact coordinates, state ownership, and live execution remain separate
+owner-approved actions.
