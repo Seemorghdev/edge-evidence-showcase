@@ -140,8 +140,9 @@ Cloud evidence is intentionally separated from the local synthetic proof.
 **Proven Cloud Run boundary.** An owner-authorized, authenticated-only Cloud Run deployment
 in a disposable environment of the exact immutable showcase image completed provider
 readback and the synthetic smoke path. The live URL, project, identity, state, and retained
-evidence coordinates remain private. This proves a bounded deployment/smoke event, not
-production availability or persistent hosted evidence authority.
+evidence coordinates remain private. This grants no deployment authority and proves only
+a bounded deployment/smoke event, not production availability or persistent hosted
+evidence authority.
 
 **Proven GKE boundary.** The separate reference-platform evidence track has an accepted,
 zero-mutation GKE external-exposure observation that verified the reviewed synthetic
