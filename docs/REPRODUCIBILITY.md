@@ -4,6 +4,12 @@
 counts and public-safe content-tree SHA-256 values. `scripts/verify_bundle.py` checks
 those identities before installation.
 
+Those bundled components are the legacy generated worker/export products used by the
+runnable synthetic demo. They are deliberately separate from the canonical six-surface
+portfolio navigation recorded in `PUBLIC_COMPONENTS.json`. A presentation-only navigation
+change must not silently change component bytes, component content-tree identities, or
+`BUNDLE_MANIFEST.json`.
+
 For a local deterministic comparison:
 
 ```bash
@@ -35,3 +41,9 @@ run fingerprint.
 The synthetic workload itself is network-free and accepts no request input. Package
 installation uses only the generated bundle and the already available build/test
 tooling in the selected Python environment.
+
+For generated-source consistency, authoritative presentation corrections are made
+upstream first and projected through the Showcase exporter. Reviewers should compare the
+generated candidate with the downstream repository and confirm that a navigation-only
+change touches only the expected presentation/test files while the bundled component
+trees and manifest remain unchanged.
