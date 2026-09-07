@@ -29,14 +29,27 @@
       "id": "C06",
       "statement": "The private hosted provider smoke evidence is not physical NAS, production availability, performance, fleet, durability, or persistent evidence-authority proof.",
       "status": "limitation"
+    },
+    {
+      "id": "C07",
+      "statement": "A separate reference-platform evidence track has an accepted zero-mutation GKE external-exposure observation proving the reviewed synthetic three-service workload and bounded same-origin HTTP journey under a stable provider state; private provider coordinates and retained evidence are not published here.",
+      "status": "cross-repo-private-evidence",
+      "trace": "reference-platform accepted external-exposure observation v4"
+    },
+    {
+      "id": "C08",
+      "statement": "The accepted GKE observation is not proof of final stable-address ownership, DNS, TLS/HTTPS, a permanent public endpoint, production availability, performance, scale, physical evidence integration, or persistent hosted evidence authority.",
+      "status": "limitation"
     }
   ],
   "prohibited": [
     "production-grade cloud or general availability claims",
     "physical NAS or private-evidence proof",
-    "performance, scale, uptime, or fleet qualification",
+    "performance, scale, uptime, SLO, or fleet qualification",
     "persistent hosted evidence authority",
     "independent provider, cleanup, IAM, or scheduler operations outside reviewed controls",
+    "final DNS, TLS/HTTPS, stable-address ownership, or permanent public endpoint claims",
+    "publication of private topology, provider coordinates, credentials, Terraform state, or retained evidence payloads",
     "exact private claim/action/worker/SQLite counts"
   ],
   "schema": "edge-evidence-public-claims.v2"
