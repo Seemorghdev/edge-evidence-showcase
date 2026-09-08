@@ -39,12 +39,16 @@ the canonical current Processor or Replication component-product repositories.
 
 ## Accepted cloud evidence
 
-- One owner-authorized, authenticated-only Cloud Run deployment in a disposable
-  environment passed immutable-image/provider readback and the complete synthetic smoke
-  path. Its coordinates and retained evidence remain private.
-- A separate reference-platform evidence track has an accepted zero-mutation GKE
-  external-exposure observation. It verified the reviewed synthetic three-service
-  workload and bounded same-origin HTTP journey under a stable provider state.
+- The current accepted application/cloud evidence track is a separate reference-platform
+  zero-mutation GKE external-exposure observation. It verified the reviewed synthetic
+  three-service workload and bounded same-origin HTTP journey under a stable provider
+  state.
+- A historical, bounded owner-authorized authenticated-only Cloud Run deployment in a
+  disposable environment passed immutable-image/provider readback and the complete
+  synthetic smoke path. Its coordinates and retained evidence remain private.
+- Retained Cloud Run/Heroku adapter and parity checks are compatibility/test surfaces;
+  their presence does not make them the current centerpiece architecture, a permanent
+  public deployment, or provider authority.
 - Those cloud facts are evidence of bounded reviewed events, not a claim that this
   showcase is deployment authority or that the resulting environment is a persistent
   evidence system.
