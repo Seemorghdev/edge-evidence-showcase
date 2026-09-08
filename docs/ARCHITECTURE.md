@@ -9,7 +9,7 @@ other systems and not an implementation or execution authority for them.
 flowchart TB
     P[Processor<br/>canonical component product<br/>private; publication pending]
     R[Replication<br/>canonical component product<br/>private; publication pending]
-    REF[Reference Platform<br/>application + cloud integration<br/>private; publication pending]
+    REF[Reference Platform<br/>application + cloud integration<br/>private by current architecture decision]
     INF[Infrastructure<br/>desired state<br/>public visibility]
     OPS[Operations<br/>controlled execution + evidence governance<br/>private; publication pending]
     S[Showcase<br/>generated presentation + synthetic integration<br/>public visibility]
@@ -78,7 +78,9 @@ the replication CLI against those exact report bytes.
 
 The Reference Platform is the separate application and cloud-integration surface. It
 composes user-facing/application services around release-pinned processor/replication
-contracts and deterministic outputs.
+contracts and deterministic outputs. It remains private by current architecture decision;
+any sanitized/generated public projection is a separate future decision, not current
+publication work.
 
 Infrastructure and Operations are deliberately separate:
 
