@@ -137,3 +137,27 @@ def test_portfolio_navigation_separates_canonical_surfaces_from_legacy_exports()
 
     assert "publication state only" in readme
     assert "legacy generated/export surfaces" in readme
+
+
+def test_reference_platform_private_decision_is_not_active_publication_pending() -> None:
+    readme = (ROOT / "README.md").read_text(encoding="utf-8")
+    architecture = (ROOT / "docs" / "ARCHITECTURE.md").read_text(encoding="utf-8")
+
+    assert (
+        "`edge-evidence-reference-platform` — private by current architecture decision; "
+        "public publication is not current work"
+    ) in readme
+    assert (
+        "REF[Reference Platform<br/>application + cloud integration<br/>"
+        "private by current architecture decision]"
+    ) in architecture
+
+    assert (
+        "`edge-evidence-reference-platform` — currently private; public publication is pending"
+        not in readme
+    )
+    assert (
+        "REF[Reference Platform<br/>application + cloud integration<br/>"
+        "private; publication pending]"
+        not in architecture
+    )
