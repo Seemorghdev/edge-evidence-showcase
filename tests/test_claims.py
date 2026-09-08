@@ -161,3 +161,49 @@ def test_reference_platform_private_decision_is_not_active_publication_pending()
         "private; publication pending]"
         not in architecture
     )
+
+
+def test_recruiter_evaluation_path_is_tied_to_public_demo_contract() -> None:
+    readme = (ROOT / "README.md").read_text(encoding="utf-8")
+    demo = (ROOT / "demo" / "run_showcase.py").read_text(encoding="utf-8")
+    reproducibility = (ROOT / "docs" / "REPRODUCIBILITY.md").read_text(
+        encoding="utf-8"
+    )
+    claims = (ROOT / "docs" / "CLAIMS-AND-LIMITATIONS.md").read_text(
+        encoding="utf-8"
+    )
+
+    for prerequisite in ("Python 3.12", "make", "ffmpeg", "ffprobe", "sqlite3"):
+        assert prerequisite in readme
+
+    expected_sample = (
+        '"proof_class": "integrated_synthetic_processing_and_replication"',
+        '"status": "pass"',
+        '"run_fingerprint": '
+        '"sha256:16fb934f03eb36557808d8a05934bc890b9d8de220709551ca41330746abdd17"',
+        '"network_required": false',
+        '"credentials_required": false',
+        '"publication_performed": false',
+        '"processor_output_replicated_by_identity": true',
+        '"replicated_bytes_match_processor_output": true',
+        '"integrated_replication_replay_is_noop": true',
+    )
+    for marker in expected_sample:
+        assert marker in readme
+
+    for executable_marker in (
+        '"proof_class": "integrated_synthetic_processing_and_replication"',
+        '"network_required": False',
+        '"credentials_required": False',
+        '"publication_performed": False',
+        '"processor_output_replicated_by_identity": True',
+        '"replicated_bytes_match_processor_output": True',
+        '"integrated_replication_replay_is_noop": True',
+    ):
+        assert executable_marker in demo
+
+    assert "historical and bounded" in reproducibility
+    assert "Cloud Run/Heroku" in reproducibility
+    assert "current centerpiece architecture" in reproducibility
+    assert "current accepted application/cloud evidence track" in claims
+    assert "historical, bounded" in claims

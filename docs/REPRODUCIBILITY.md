@@ -35,8 +35,15 @@ docker rm -f edge-evidence-showcase
 The fingerprint excludes SQLite databases, synthetic MP4 files, and lock files. Each
 worker is responsible for validating its own authoritative state semantics; the
 showcase compares stable receipts, summaries, manifests, and generated report/target
-hashes. The public smoke tool requires Cloud Run and Heroku to return the same stable
-run fingerprint.
+hashes.
+
+The retained Cloud Run/Heroku smoke parity path is **historical and bounded**. When that
+adapter-compatibility path is exercised, the public smoke tool requires the adapters to
+return the same stable synthetic run fingerprint. That parity check does not make either
+adapter the current centerpiece architecture, does not publish a permanent endpoint, and
+does not grant deployment authority. The current accepted application/cloud observation
+is the separate Reference Platform GKE evidence track described in
+`docs/CLAIMS-AND-LIMITATIONS.md`.
 
 The synthetic workload itself is network-free and accepts no request input. Package
 installation uses only the generated bundle and the already available build/test

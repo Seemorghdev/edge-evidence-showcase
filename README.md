@@ -4,6 +4,59 @@ This repository is the **generated presentation and synthetic integration surfac
 the Edge Evidence portfolio. It is not the implementation authority for processor,
 replication, the reference platform, infrastructure, or operations.
 
+## Evaluate in 2 minutes
+
+**What Project 03 demonstrates.** The portfolio separates deterministic evidence
+processing, immutable replication, application/cloud integration, infrastructure desired
+state, controlled operations, and public presentation. This Showcase itself proves the
+synthetic processor/replication path: separate worker environments, verified byte-for-byte
+handoff, independent replication readback, and replay with no new writes.
+
+**What is separate cloud evidence.** The accepted application/cloud observation is the
+Reference Platform's bounded zero-mutation GKE external-exposure observation. A historical,
+bounded Cloud Run deployment/smoke event is also retained as evidence. Neither makes this
+repository deployment authority, a permanent public endpoint, or persistent evidence
+authority.
+
+**Fastest local path.** A Codespace or the provided devcontainer is the preferred
+zero-friction environment. On a local host, `scripts/setup.sh` requires Python 3.12 or
+newer plus `make`, `ffmpeg`, `ffprobe`, and `sqlite3`.
+
+```bash
+./scripts/setup.sh
+make demo
+make inspect
+```
+
+A fresh run of this exact deterministic bundle produces a public-safe combined summary
+with this stable result shape and fingerprint:
+
+```json
+{
+  "proof_class": "integrated_synthetic_processing_and_replication",
+  "status": "pass",
+  "run_fingerprint": "sha256:16fb934f03eb36557808d8a05934bc890b9d8de220709551ca41330746abdd17",
+  "constraints": {
+    "network_required": false,
+    "credentials_required": false,
+    "publication_performed": false
+  },
+  "invariants": {
+    "processor_output_replicated_by_identity": true,
+    "replicated_bytes_match_processor_output": true,
+    "integrated_replication_replay_is_noop": true
+  }
+}
+```
+
+The same run prints `Edge Evidence integrated synthetic showcase: PASS`; inspect the
+machine result at `.demo-output/combined/summary.json`. Then continue with
+[`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md),
+[`docs/CLAIMS-AND-LIMITATIONS.md`](docs/CLAIMS-AND-LIMITATIONS.md), and
+[`docs/REPRODUCIBILITY.md`](docs/REPRODUCIBILITY.md). No decorative screenshot is added:
+the current evidence surfaces are deterministic receipts/JSON plus the GitHub-rendered
+Mermaid architecture, not a separate recruiter-facing UI.
+
 ## 30-second portfolio map
 
 | Canonical surface | What it owns | Current publication state |
@@ -70,20 +123,10 @@ The generated bundle contains no credentials, private proof payloads, camera sou
 persistent-authority configuration. Deployment adapters remain manual and require a
 separately approved credentialed executor.
 
-## Fast local tour
+## Local setup details
 
-In a Codespace or the provided development container:
-
-```bash
-./scripts/setup.sh
-make demo
-make inspect
-make test
-make clean
-```
-
-`setup.sh` verifies the generated component digests and installs the workers into
-separate virtual environments:
+`setup.sh` verifies the generated component digests and installs the workers into separate
+virtual environments:
 
 ```text
 .venv/processor/
@@ -91,19 +134,12 @@ separate virtual environments:
 ```
 
 The showcase orchestrator communicates with them only through subprocess status, JSON
-receipts, filesystem paths, and SHA-256 identities.
+receipts, filesystem paths, and SHA-256 identities. Run `make test` for the full local test
+tour and `make clean` when finished; cleanup removes only the guarded `.demo-output` path.
 
-For a technical walkthrough, start with:
-
-- [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) — how the six canonical portfolio
-  surfaces, legacy generated worker exports, and this generated bundle relate;
-- [`docs/CLAIMS-AND-LIMITATIONS.md`](docs/CLAIMS-AND-LIMITATIONS.md) — what the demos and
-  cloud evidence do and do not prove;
-- [`PUBLIC_CLAIMS.json`](PUBLIC_CLAIMS.json) — machine-readable public claim boundary;
-- [`PUBLIC_COMPONENTS.json`](PUBLIC_COMPONENTS.json) — bundled generated components plus
-  canonical portfolio-navigation inventory;
-- [`docs/REPRODUCIBILITY.md`](docs/REPRODUCIBILITY.md) — bundle verification and
-  deterministic regeneration expectations.
+For deeper review, `PUBLIC_CLAIMS.json` is the machine-readable public claim boundary and
+`PUBLIC_COMPONENTS.json` separates bundled generated components from canonical portfolio
+navigation.
 
 ## What `make demo` proves
 
@@ -159,26 +195,27 @@ only and are not persistent evidence authority.
 
 Cloud evidence is intentionally separated from the local synthetic proof.
 
-**Proven Cloud Run boundary.** An owner-authorized, authenticated-only Cloud Run deployment
+**Current accepted GKE observation.** The separate reference-platform evidence track has
+an accepted, zero-mutation GKE external-exposure observation that verified the reviewed
+synthetic three-service workload and bounded same-origin HTTP journey under a stable
+provider state. Private provider coordinates and retained evidence are intentionally not
+copied here.
+
+**Historical bounded Cloud Run evidence.** An owner-authorized, authenticated-only Cloud Run deployment
 in a disposable environment of the exact immutable showcase image completed provider
 readback and the synthetic smoke path. The live URL, project, identity, state, and retained
-evidence coordinates remain private. This grants no deployment authority and proves only
-a bounded deployment/smoke event, not production availability or persistent hosted
-evidence authority.
-
-**Proven GKE boundary.** The separate reference-platform evidence track has an accepted,
-zero-mutation GKE external-exposure observation that verified the reviewed synthetic
-three-service workload and bounded same-origin HTTP journey under a stable provider state.
-Private provider coordinates and retained evidence are intentionally not copied here.
+evidence coordinates remain private. This historical event grants no deployment authority
+and proves only a bounded deployment/smoke event, not production availability or persistent
+hosted evidence authority.
 
 **Still pending.** Stable public-address ownership/binding, final DNS naming,
 ManagedCertificate/TLS/HTTPS transition, production availability, performance, scale,
 SLOs, and physical evidence integration are outside the accepted public claim boundary.
 No temporary endpoint is published from this repository.
 
-The Cloud Run Terraform and deployment scripts in this repository are therefore best read
-as a **bounded showcase adapter and historical proof surface**, not as the current cloud
-architecture authority. Credential-free validation remains available with:
+The retained Cloud Run Terraform and deployment scripts are therefore a **bounded
+historical adapter/proof surface**, not the current centerpiece architecture or cloud
+authority. Credential-free validation remains available with:
 
 ```bash
 python3 scripts/validate_deployment_contract.py
