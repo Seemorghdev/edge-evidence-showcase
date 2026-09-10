@@ -21,7 +21,53 @@ make fingerprint OUTPUT_ROOT=.demo-output-b > /tmp/b.json
 diff -u /tmp/a.json /tmp/b.json
 ```
 
-For the bounded HTTP surface:
+Repeated demos under the same fixed toolchain/environment are expected to produce
+byte-identical fingerprint maps. The exact retained source/CI `run_fingerprint` shown in
+the README is one public evidence sample, **not a universal constant across every
+supported host or toolchain**. Compare exact fingerprints across environments only when
+the relevant immutable adapter/build environment is intentionally held fixed; otherwise
+compare the documented proof shape, invariants, and same-environment identity result.
+
+For the direct Codespaces/devcontainer HTTP surface, Docker and `curl` are not required.
+Port `8080` is declared as **Showcase HTTP** in `.devcontainer/devcontainer.json`. Start
+the checked-in service with stdin detached from the interactive shell and probe it with
+the Python standard library:
+
+```bash
+PORT=8080 .venv/showcase/bin/python scripts/serve_showcase.py \
+  </dev/null >/tmp/showcase-http.out 2>/tmp/showcase-http.err &
+pid=$!
+
+.venv/showcase/bin/python - <<'PY'
+import json
+from urllib.request import urlopen
+
+
+def get(path):
+    with urlopen("http://127.0.0.1:8080" + path, timeout=120) as response:
+        return json.load(response)
+
+
+print(get("/healthz"))
+print(get("/readyz"))
+first = get("/api/demo")
+second = get("/api/demo")
+print({"status": first["status"], "cached": first["cached"]})
+print({"status": second["status"], "cached": second["cached"]})
+PY
+
+kill "$pid"
+wait "$pid" 2>/dev/null || true
+```
+
+Expected semantics are health `ok`, readiness `ready`, first demo `status=pass` with
+`cached=false`, and second demo `status=pass` with `cached=true`. In GitHub Codespaces,
+the Ports panel should expose the declared **Showcase HTTP** port `8080`; the browser root
+returns the public service document and `/api/demo` returns the same bounded synthetic
+summary.
+
+For the containerized HTTP surface, use a **Docker-capable host**. Docker is not bundled
+into the preferred Codespace solely for this walkthrough:
 
 ```bash
 docker build --target runtime -t edge-evidence-showcase:local .
