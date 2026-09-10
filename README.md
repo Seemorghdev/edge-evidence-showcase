@@ -28,8 +28,11 @@ make demo
 make inspect
 ```
 
-A fresh run of this exact deterministic bundle produces a public-safe combined summary
-with this stable result shape and fingerprint:
+A retained source/CI run of this exact generated bundle produced the public-safe sample
+below. The result shape and `sha256:` fingerprint format are stable contracts; the exact
+fingerprint is **not a universal value across every supported host or toolchain**.
+Repeated runs under the same fixed toolchain/environment are expected to produce
+byte-identical fingerprint maps:
 
 ```json
 {
@@ -50,8 +53,10 @@ with this stable result shape and fingerprint:
 ```
 
 The same run prints `Edge Evidence integrated synthetic showcase: PASS`; inspect the
-machine result at `.demo-output/combined/summary.json`. Then continue with
-[`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md),
+machine result at `.demo-output/combined/summary.json`. To prove determinism in the
+environment you are evaluating, run two independent demos and compare `make fingerprint`
+outputs as shown in [`docs/REPRODUCIBILITY.md`](docs/REPRODUCIBILITY.md). Then continue
+with [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md),
 [`docs/CLAIMS-AND-LIMITATIONS.md`](docs/CLAIMS-AND-LIMITATIONS.md), and
 [`docs/REPRODUCIBILITY.md`](docs/REPRODUCIBILITY.md). No decorative screenshot is added:
 the current evidence surfaces are deterministic receipts/JSON plus the GitHub-rendered
@@ -163,10 +168,53 @@ All state remains inspectable under `.demo-output/`:
 `make inspect` is read-only. `make clean` removes only a guarded `.demo-output` path
 inside this repository.
 
+## Codespaces direct HTTP demonstration
+
+The preferred Codespace/devcontainer does **not** require Docker or `curl` for this deeper
+reviewer path. Port `8080` is declared as **Showcase HTTP** in the devcontainer. After
+setup, start the checked-in read-only service with stdin detached from the interactive
+terminal, then probe it with the Python standard library:
+
+```bash
+PORT=8080 .venv/showcase/bin/python scripts/serve_showcase.py \
+  </dev/null >/tmp/showcase-http.out 2>/tmp/showcase-http.err &
+pid=$!
+
+.venv/showcase/bin/python - <<'PY'
+import json
+from urllib.request import urlopen
+
+
+def get(path):
+    with urlopen("http://127.0.0.1:8080" + path, timeout=120) as response:
+        return json.load(response)
+
+
+print(get("/healthz"))
+print(get("/readyz"))
+first = get("/api/demo")
+second = get("/api/demo")
+print({"status": first["status"], "cached": first["cached"]})
+print({"status": second["status"], "cached": second["cached"]})
+PY
+
+kill "$pid"
+wait "$pid" 2>/dev/null || true
+```
+
+Expected semantics are health `ok`, readiness `ready`, a first demo response with
+`status=pass` and `cached=false`, then a second `status=pass` response with `cached=true`.
+When using GitHub Codespaces, the Ports panel should expose the declared **Showcase HTTP**
+port `8080`; opening it in a browser shows the public service document at `/`, and
+`/api/demo` exposes the same bounded synthetic summary. The adapter accepts no request
+body, query input, evidence, or camera source.
+
 ## Container demonstration
 
-Build the canonical runtime image from the generated bundle. The default command is a
-read-only HTTP adapter that accepts no body, query input, evidence, or camera source:
+On a **Docker-capable host**, build the canonical runtime image from the generated bundle.
+Docker is not bundled into the preferred Codespace merely for this walkthrough. The
+default container command is a read-only HTTP adapter that accepts no body, query input,
+evidence, or camera source:
 
 ```bash
 docker build --target runtime -t edge-evidence-showcase:local .

@@ -172,6 +172,9 @@ def test_recruiter_evaluation_path_is_tied_to_public_demo_contract() -> None:
     claims = (ROOT / "docs" / "CLAIMS-AND-LIMITATIONS.md").read_text(
         encoding="utf-8"
     )
+    devcontainer = json.loads(
+        (ROOT / ".devcontainer" / "devcontainer.json").read_text(encoding="utf-8")
+    )
 
     for prerequisite in ("Python 3.12", "make", "ffmpeg", "ffprobe", "sqlite3"):
         assert prerequisite in readme
@@ -190,6 +193,26 @@ def test_recruiter_evaluation_path_is_tied_to_public_demo_contract() -> None:
     )
     for marker in expected_sample:
         assert marker in readme
+
+    assert "A fresh run of this exact deterministic bundle produces" not in readme
+    assert "not a universal value across every supported host or toolchain" in readme
+    assert "same fixed toolchain/environment" in readme
+    assert "Codespaces direct HTTP demonstration" in readme
+    assert "</dev/null" in readme
+    assert "from urllib.request import urlopen" in readme
+    assert "Docker is not bundled into the preferred Codespace" in readme
+
+    assert devcontainer["forwardPorts"] == [8080]
+    assert devcontainer["portsAttributes"]["8080"] == {
+        "label": "Showcase HTTP",
+        "onAutoForward": "notify",
+    }
+
+    assert "same fixed toolchain/environment" in reproducibility
+    assert "not a universal constant across every" in reproducibility
+    assert "Docker and `curl` are not required" in reproducibility
+    assert "Docker-capable host" in reproducibility
+    assert "Showcase HTTP" in reproducibility
 
     for executable_marker in (
         '"proof_class": "integrated_synthetic_processing_and_replication"',
