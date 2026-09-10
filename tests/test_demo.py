@@ -4,6 +4,7 @@ import hashlib
 import importlib.util
 import json
 from pathlib import Path
+from types import SimpleNamespace
 
 import pytest
 
@@ -44,6 +45,49 @@ def _processor_summary(report_relative: str, report_sha: str) -> dict[str, objec
     }
 
 
+def _inspection_fixture(tmp_path: Path) -> tuple[Path, Path]:
+    output = tmp_path / ".demo-output-test"
+    report = output / "processor" / "normal" / "report.json"
+    report.parent.mkdir(parents=True)
+    report.write_bytes(b'{"synthetic":true}\n')
+
+    handoff_summary = output / "handoff" / "summary.txt"
+    handoff_summary.parent.mkdir(parents=True)
+    handoff_summary.write_text("handoff pass\n", encoding="utf-8")
+
+    combined = output / "combined"
+    combined.mkdir(parents=True)
+    run_showcase._write_json(
+        combined / "summary.json",
+        {
+            "schema_version": 1,
+            "status": "pass",
+            "components": {
+                "processor": {
+                    "output_path": "processor/normal/report.json",
+                    "output_sha256": hashlib.sha256(report.read_bytes()).hexdigest(),
+                }
+            },
+        },
+    )
+    (combined / "summary.txt").write_text("combined pass\n", encoding="utf-8")
+    run_showcase._write_json(combined / "manifest.json", run_showcase._output_manifest(output))
+    return output, report
+
+
+def _stub_component_inspect(monkeypatch) -> None:
+    monkeypatch.setattr(
+        run_showcase,
+        "_require_executable",
+        lambda path, label: str(path),
+    )
+    monkeypatch.setattr(
+        run_showcase,
+        "_run_component_make",
+        lambda *args, **kwargs: SimpleNamespace(stdout=""),
+    )
+
+
 def test_processor_contract_binds_verified_report(tmp_path: Path) -> None:
     report = tmp_path / "normal" / "report.json"
     report.parent.mkdir()
@@ -78,6 +122,61 @@ def test_replication_contract_requires_all_invariants() -> None:
     payload["invariants"]["two"] = False
     with pytest.raises(run_showcase.ShowcaseFailure):
         run_showcase._validate_replication(payload)
+
+
+def test_inspect_clean_evidence_is_read_only(
+    tmp_path: Path, monkeypatch, capsys
+) -> None:
+    monkeypatch.setattr(run_showcase, "ROOT", tmp_path)
+    _inspection_fixture(tmp_path)
+    _stub_component_inspect(monkeypatch)
+
+    before = run_showcase.deterministic_fingerprint(Path(".demo-output-test"))
+    run_showcase.inspect_demo(
+        Path(".demo-output-test"), Path("processor-python"), Path("replication-python")
+    )
+    after = run_showcase.deterministic_fingerprint(Path(".demo-output-test"))
+
+    assert before == after
+    assert "Combined machine summary" in capsys.readouterr().out
+
+
+def test_inspect_missing_demo_fails_closed(tmp_path: Path, monkeypatch) -> None:
+    monkeypatch.setattr(run_showcase, "ROOT", tmp_path)
+    with pytest.raises(run_showcase.ShowcaseFailure, match="demo output is missing"):
+        run_showcase.inspect_demo(
+            Path(".demo-output-test"),
+            Path("processor-python"),
+            Path("replication-python"),
+        )
+
+
+def test_inspect_rejects_retained_deterministic_artifact_tamper(
+    tmp_path: Path, monkeypatch, capsys
+) -> None:
+    monkeypatch.setattr(run_showcase, "ROOT", tmp_path)
+    _, report = _inspection_fixture(tmp_path)
+    _stub_component_inspect(monkeypatch)
+
+    before = run_showcase.deterministic_fingerprint(Path(".demo-output-test"))
+    with report.open("ab") as handle:
+        handle.write(b"\nTAMPER\n")
+    after = run_showcase.deterministic_fingerprint(Path(".demo-output-test"))
+
+    assert before != after
+    with pytest.raises(
+        run_showcase.ShowcaseFailure,
+        match=(
+            "retained deterministic artifact integrity mismatch: "
+            "processor/normal/report.json"
+        ),
+    ):
+        run_showcase.inspect_demo(
+            Path(".demo-output-test"),
+            Path("processor-python"),
+            Path("replication-python"),
+        )
+    assert capsys.readouterr().out == ""
 
 
 def test_guarded_output_and_cleanup(tmp_path: Path, monkeypatch) -> None:

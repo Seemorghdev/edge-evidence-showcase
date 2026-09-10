@@ -435,6 +435,59 @@ def deterministic_fingerprint(output_root: Path) -> dict[str, str]:
     return result
 
 
+def _recorded_deterministic_fingerprint(root: Path) -> dict[str, str]:
+    manifest_path = root / "combined" / "manifest.json"
+    if not manifest_path.is_file():
+        raise ShowcaseFailure("retained deterministic artifact manifest is missing")
+    manifest = _load_object(manifest_path, "combined manifest")
+    files = manifest.get("files")
+    if (
+        manifest.get("schema_version") != 1
+        or manifest.get("status") != "pass"
+        or not isinstance(files, list)
+    ):
+        raise ShowcaseFailure("retained deterministic artifact manifest contract mismatch")
+
+    result: dict[str, str] = {}
+    for entry in files:
+        if not isinstance(entry, dict):
+            raise ShowcaseFailure("retained deterministic artifact manifest contract mismatch")
+        kind = entry.get("kind")
+        if kind not in {"deterministic_file", "inspectable_local_state"}:
+            raise ShowcaseFailure("retained deterministic artifact manifest contract mismatch")
+        if kind != "deterministic_file":
+            continue
+        relative = entry.get("path")
+        digest = entry.get("sha256")
+        if (
+            not isinstance(relative, str)
+            or not isinstance(digest, str)
+            or not re.fullmatch(r"[0-9a-f]{64}", digest)
+        ):
+            raise ShowcaseFailure("retained deterministic artifact manifest contract mismatch")
+        relative_path = Path(relative)
+        if (
+            relative_path.is_absolute()
+            or ".." in relative_path.parts
+            or relative == "combined/manifest.json"
+            or relative in result
+        ):
+            raise ShowcaseFailure("retained deterministic artifact manifest contract mismatch")
+        result[relative] = digest
+    return result
+
+
+def _verify_retained_deterministic_artifacts(root: Path) -> None:
+    expected = _recorded_deterministic_fingerprint(root)
+    current = deterministic_fingerprint(root)
+    current.pop("combined/manifest.json", None)
+    for relative in sorted(set(expected) | set(current)):
+        if expected.get(relative) != current.get(relative):
+            raise ShowcaseFailure(
+                f"retained deterministic artifact integrity mismatch: {relative}"
+            )
+
+
 def inspect_demo(
     output_root: Path,
     processor_python: Path,
@@ -444,6 +497,7 @@ def inspect_demo(
     combined = root / "combined" / "summary.json"
     if not combined.is_file():
         raise ShowcaseFailure("demo output is missing; run 'make demo' first")
+    _verify_retained_deterministic_artifacts(root)
     processor_python_text = _require_executable(processor_python, "processor")
     replication_python_text = _require_executable(replication_python, "replication")
     processor = _run_component_make(
