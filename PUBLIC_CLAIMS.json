@@ -40,6 +40,16 @@
       "id": "C08",
       "statement": "The accepted GKE observation is not proof of final stable-address ownership, DNS, TLS/HTTPS, a permanent public endpoint, production availability, performance, scale, physical evidence integration, or persistent hosted evidence authority.",
       "status": "limitation"
+    },
+    {
+      "id": "C09",
+      "statement": "The public Showcase has an owner-authorized Heroku recruiter deployment using exactly one Basic web dyno with zero add-ons and no unexpected process types; HTTPS smoke and Firefox browser acceptance passed against the accepted release.",
+      "status": "public-live-bounded"
+    },
+    {
+      "id": "C10",
+      "statement": "A separate Reference Platform track has an owner-authorized bounded public Cloud Run recruiter deployment of Web UI, Evidence API, and Edge Agent; synthetic artifact, health/inspection, exact-origin CORS, Firefox browser journey, and final provider readback checks passed.",
+      "status": "cross-repo-live-bounded"
     }
   ],
   "prohibited": [
@@ -48,7 +58,7 @@
     "performance, scale, uptime, SLO, or fleet qualification",
     "persistent hosted evidence authority",
     "independent provider, cleanup, IAM, or scheduler operations outside reviewed controls",
-    "final DNS, TLS/HTTPS, stable-address ownership, or permanent public endpoint claims",
+    "custom-domain or DNS ownership, custom-certificate, production-availability, or persistent-address guarantees",
     "publication of private topology, provider coordinates, credentials, Terraform state, or retained evidence payloads",
     "exact private claim/action/worker/SQLite counts"
   ],
