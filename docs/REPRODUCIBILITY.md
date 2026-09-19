@@ -83,13 +83,13 @@ worker is responsible for validating its own authoritative state semantics; the
 showcase compares stable receipts, summaries, manifests, and generated report/target
 hashes.
 
-The retained Cloud Run/Heroku smoke parity path is **historical and bounded**. When that
-adapter-compatibility path is exercised, the public smoke tool requires the adapters to
-return the same stable synthetic run fingerprint. That parity check does not make either
-adapter the current centerpiece architecture, does not publish a permanent endpoint, and
-does not grant deployment authority. The current accepted application/cloud observation
-is the separate Reference Platform GKE evidence track described in
-`docs/CLAIMS-AND-LIMITATIONS.md`.
+The current owner-authorized Heroku live path is a **bounded accepted recruiter surface**.
+The public smoke tool was exercised against provider HTTPS and the Firefox/browser journey
+passed against the accepted release. The retained Showcase Cloud Run adapter remains a
+historical bounded compatibility/proof surface. The current Reference Platform Cloud Run
+recruiter deployment is separate accepted application/cloud evidence described in
+`docs/CLAIMS-AND-LIMITATIONS.md`. None of these paths grants this repository deployment
+authority, production status, or persistent evidence authority.
 
 The synthetic workload itself is network-free and accepts no request input. Package
 installation uses only the generated bundle and the already available build/test
