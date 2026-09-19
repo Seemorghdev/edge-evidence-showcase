@@ -39,19 +39,25 @@ the canonical current Processor or Replication component-product repositories.
 
 ## Accepted cloud evidence
 
-- The current accepted application/cloud evidence track is a separate reference-platform
-  zero-mutation GKE external-exposure observation. It verified the reviewed synthetic
-  three-service workload and bounded same-origin HTTP journey under a stable provider
-  state.
-- A historical, bounded owner-authorized authenticated-only Cloud Run deployment in a
-  disposable environment passed immutable-image/provider readback and the complete
-  synthetic smoke path. Its coordinates and retained evidence remain private.
-- Retained Cloud Run/Heroku adapter and parity checks are compatibility/test surfaces;
-  their presence does not make them the current centerpiece architecture, a permanent
-  public deployment, or provider authority.
-- Those cloud facts are evidence of bounded reviewed events, not a claim that this
-  showcase is deployment authority or that the resulting environment is a persistent
-  evidence system.
+- The current accepted Reference Platform application/cloud path is an owner-authorized
+  bounded public Cloud Run recruiter deployment of Web UI, Evidence API, and Edge Agent.
+  Synthetic artifact, health/inspection, exact-origin CORS, automated Firefox browser,
+  and final provider-readback checks passed. Private provider coordinates and retained
+  evidence remain unpublished.
+- The current accepted Showcase live path is an owner-authorized public-safe Heroku
+  recruiter deployment using exactly one Basic `web` dyno, zero add-ons, and no unexpected
+  process types. HTTPS smoke plus Firefox/browser, console, and network checks passed
+  against the accepted release.
+- The earlier zero-mutation GKE external-exposure observation remains valid deeper platform
+  evidence for the state it recorded.
+- A historical, bounded owner-authorized authenticated-only Showcase Cloud Run deployment
+  in a disposable environment also passed immutable-image/provider readback and the
+  complete synthetic smoke path.
+- Retained Cloud Run/Heroku adapters are bounded compatibility/proof surfaces; their
+  presence does not make this repository provider authority.
+- These cloud facts are evidence of bounded reviewed events, not a claim that this
+  showcase is deployment authority, production infrastructure, or a persistent evidence
+  system.
 
 ## Deliberately not claimed
 
@@ -62,8 +68,8 @@ the canonical current Processor or Replication component-product repositories.
 - Equivalence between provider smoke/observation evidence and durable private evidence.
 - Authorization for independent provider operations, IAM changes, infrastructure
   expansion, scheduler activation, or retained-state deletion outside reviewed controls.
-- Final stable-address ownership/binding, public DNS naming, ManagedCertificate/TLS/HTTPS,
-  or a permanent public endpoint.
+- Custom-domain/DNS ownership, custom certificate naming, persistent-address guarantees,
+  or production availability.
 - Publication of provider coordinates, private topology, credentials, Terraform state, or
   retained private evidence payloads.
 
