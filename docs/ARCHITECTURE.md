@@ -7,11 +7,11 @@ other systems and not an implementation or execution authority for them.
 
 ```mermaid
 flowchart TB
-    P[Processor<br/>canonical component product<br/>private; publication pending]
-    R[Replication<br/>canonical component product<br/>private; publication pending]
+    P[Processor<br/>canonical component product<br/>private canonical product]
+    R[Replication<br/>canonical component product<br/>private canonical product]
     REF[Reference Platform<br/>application + cloud integration<br/>private by current architecture decision]
     INF[Infrastructure<br/>desired state<br/>public visibility]
-    OPS[Operations<br/>controlled execution + evidence governance<br/>private; publication pending]
+    OPS[Operations<br/>controlled execution + evidence governance<br/>private control surface]
     S[Showcase<br/>generated presentation + synthetic integration<br/>public visibility]
 
     P -->|release-pinned contracts + outputs| REF

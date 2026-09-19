@@ -12,11 +12,13 @@ state, controlled operations, and public presentation. This Showcase itself prov
 synthetic processor/replication path: separate worker environments, verified byte-for-byte
 handoff, independent replication readback, and replay with no new writes.
 
-**What is separate cloud evidence.** The accepted application/cloud observation is the
-Reference Platform's bounded zero-mutation GKE external-exposure observation. A historical,
-bounded Cloud Run deployment/smoke event is also retained as evidence. Neither makes this
-repository deployment authority, a permanent public endpoint, or persistent evidence
-authority.
+**What is separate cloud evidence.** The current accepted application/cloud path is the
+Reference Platform's bounded public Cloud Run recruiter deployment: three synthetic/read-only
+services with browser/client verification and exact-origin CORS. This Showcase also has a
+current owner-authorized Heroku recruiter deployment using one Basic `web` dyno, with HTTPS
+smoke and browser acceptance verified. The earlier GKE observation and Showcase Cloud Run
+deployment remain retained historical evidence. None of these make this repository deployment
+authority, production infrastructure, or persistent evidence authority.
 
 **Fastest local path.** A Codespace or the provided devcontainer is the preferred
 zero-friction environment. On a local host, `scripts/setup.sh` requires Python 3.12 or
@@ -66,11 +68,11 @@ Mermaid architecture, not a separate recruiter-facing UI.
 
 | Canonical surface | What it owns | Current publication state |
 | --- | --- | --- |
-| Processor | Deterministic evidence processing, checkpoint/recovery semantics, lineage verification, and replay-safe processing contracts | `edge-evidence-processor` — currently private; public publication is pending |
-| Replication | Immutable replication of finalized evidence, independent readback verification, collision refusal, and replay-safe replication contracts | `edge-evidence-replication` — currently private; public publication is pending |
+| Processor | Deterministic evidence processing, checkpoint/recovery semantics, lineage verification, and replay-safe processing contracts | `edge-evidence-processor` — private canonical product; legacy public worker export remains below |
+| Replication | Immutable replication of finalized evidence, independent readback verification, collision refusal, and replay-safe replication contracts | `edge-evidence-replication` — private canonical product; legacy public worker export remains below |
 | Reference Platform | User-facing/application services and cloud-application integration built from release-pinned component contracts | `edge-evidence-reference-platform` — private by current architecture decision; public publication is not current work |
 | Infrastructure | Generalized cloud/platform desired state — what reviewed platform state should exist, without execution authority | [`edge-evidence-infrastructure`](https://github.com/Seemorghdev/edge-evidence-infrastructure) — currently public |
-| Operations | Controlled execution and evidence governance — how reviewed humans/automation may inspect or change state | `edge-evidence-operations` — currently private; public publication is pending |
+| Operations | Controlled execution and evidence governance — how reviewed humans/automation may inspect or change state | `edge-evidence-operations` — private control/governance surface by current architecture decision |
 | Showcase | Generated portfolio navigation, synthetic integration, reproducibility, and public claim boundaries | You are here; this repository is currently public |
 
 Repository visibility describes **publication state only**. It is not a readiness,
@@ -239,27 +241,33 @@ docker run --rm --network none \
 Container-local files, SQLite databases, and in-memory summaries are demonstration state
 only and are not persistent evidence authority.
 
-## Cloud evidence — proven versus pending
+## Cloud evidence — current, historical, and deliberately unclaimed
 
 Cloud evidence is intentionally separated from the local synthetic proof.
 
-**Current accepted GKE observation.** The separate reference-platform evidence track has
-an accepted, zero-mutation GKE external-exposure observation that verified the reviewed
-synthetic three-service workload and bounded same-origin HTTP journey under a stable
-provider state. Private provider coordinates and retained evidence are intentionally not
-copied here.
+**Current Reference Cloud Run recruiter path.** The separate Reference Platform track has
+an accepted owner-authorized bounded public Cloud Run deployment of Web UI, Evidence API,
+and Edge Agent. Synthetic artifact, health/inspection, exact-origin CORS, automated Firefox
+browser, and final provider-readback checks passed. Private provider coordinates and retained
+evidence are intentionally not copied here.
 
-**Historical bounded Cloud Run evidence.** An owner-authorized, authenticated-only Cloud Run deployment
-in a disposable environment of the exact immutable showcase image completed provider
-readback and the synthetic smoke path. The live URL, project, identity, state, and retained
-evidence coordinates remain private. This historical event grants no deployment authority
-and proves only a bounded deployment/smoke event, not production availability or persistent
-hosted evidence authority.
+**Current Showcase Heroku recruiter path.** This Showcase has an accepted owner-authorized
+public-safe Heroku deployment using exactly one Basic `web` dyno, with zero add-ons and no
+unexpected process types. HTTPS smoke plus Firefox/browser, console, and network acceptance
+passed against the accepted release. The provider-assigned URL is not hard-coded into this
+generated source; publishing that exact URL remains a separate presentation choice. This
+proves a bounded live evaluator surface, not production availability or persistent evidence
+authority.
 
-**Still pending.** Stable public-address ownership/binding, final DNS naming,
-ManagedCertificate/TLS/HTTPS transition, production availability, performance, scale,
-SLOs, and physical evidence integration are outside the accepted public claim boundary.
-No temporary endpoint is published from this repository.
+**Historical evidence retained.** The earlier zero-mutation GKE external-exposure observation
+and the bounded authenticated-only Showcase Cloud Run deployment remain valid historical
+proof for the states they recorded. They grant no new deployment authority.
+
+**Deliberately not claimed.** Custom-domain/DNS ownership, custom certificate naming,
+production availability, performance, scale, SLOs, physical evidence integration, and
+persistent hosted evidence authority remain outside the accepted public claim boundary.
+Provider-assigned HTTPS was verified for the accepted current live paths; no custom-domain
+or production claim is implied.
 
 The retained Cloud Run Terraform and deployment scripts are therefore a **bounded
 historical adapter/proof surface**, not the current centerpiece architecture or cloud
@@ -300,7 +308,7 @@ image push, resource creation, IAM change, deployment, rollback, or provider smo
 - No persistent hosted evidence authority.
 - No publication of private topology, provider coordinates, retained evidence payloads,
   footage, camera details, credentials, or Terraform state.
-- Final DNS/HTTPS naming remains pending.
+- No custom-domain/DNS ownership, custom-certificate, production-availability, performance, or SLO claim.
 
 ## Security and contributions
 
