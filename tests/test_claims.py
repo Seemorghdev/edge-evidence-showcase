@@ -30,6 +30,8 @@ def test_claims_freeze_integrated_synthetic_scope() -> None:
         "C06",
         "C07",
         "C08",
+        "C09",
+        "C10",
     ]
     by_id = {item["id"]: item for item in claims["claims"]}
     assert by_id["C04"]["status"] == "synthetic-only"
@@ -43,6 +45,12 @@ def test_claims_freeze_integrated_synthetic_scope() -> None:
     assert by_id["C07"]["statement"] == _C07
     assert by_id["C08"]["status"] == "limitation"
     assert by_id["C08"]["statement"] == _C08
+    assert by_id["C09"]["status"] == "public-live-bounded"
+    assert "one Basic web dyno" in by_id["C09"]["statement"]
+    assert "Firefox browser acceptance passed" in by_id["C09"]["statement"]
+    assert by_id["C10"]["status"] == "cross-repo-live-bounded"
+    assert "bounded public Cloud Run recruiter deployment" in by_id["C10"]["statement"]
+    assert "final provider readback checks passed" in by_id["C10"]["statement"]
     prohibited = " ".join(claims["prohibited"]).lower()
     for marker in (
         "production",
@@ -52,7 +60,7 @@ def test_claims_freeze_integrated_synthetic_scope() -> None:
         "independent provider",
         "scheduler operations",
         "dns",
-        "tls/https",
+        "custom-certificate",
         "private topology",
         "terraform state",
         "exact private claim/action/worker/sqlite counts",
@@ -161,6 +169,12 @@ def test_reference_platform_private_decision_is_not_active_publication_pending()
         "private; publication pending]"
         not in architecture
     )
+    assert "public publication is pending" not in readme
+    assert "private; publication pending" not in architecture
+    assert "private canonical product" in readme
+    assert "private control/governance surface by current architecture decision" in readme
+    assert "private canonical product" in architecture
+    assert "private control surface" in architecture
 
 
 def test_recruiter_evaluation_path_is_tied_to_public_demo_contract() -> None:
@@ -225,8 +239,11 @@ def test_recruiter_evaluation_path_is_tied_to_public_demo_contract() -> None:
     ):
         assert executable_marker in demo
 
-    assert "historical and bounded" in reproducibility
-    assert "Cloud Run/Heroku" in reproducibility
-    assert "current centerpiece architecture" in reproducibility
-    assert "current accepted application/cloud evidence track" in claims
+    assert "bounded accepted recruiter surface" in reproducibility
+    assert "Reference Platform Cloud Run" in reproducibility
+    assert "recruiter deployment" in reproducibility
+    reproducibility_flat = " ".join(reproducibility.split())
+    assert "deployment authority" in reproducibility_flat
+    assert "current accepted Reference Platform application/cloud path" in claims
+    assert "current accepted Showcase live path" in claims
     assert "historical, bounded" in claims
