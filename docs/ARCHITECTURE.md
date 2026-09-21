@@ -1,9 +1,11 @@
 # Architecture walkthrough
 
-The portfolio separates **component-product authority**, **application composition**,
-**infrastructure desired state**, **operations execution/governance**, and **generated
-presentation**. This repository is the presentation layer, not a monorepo copy of the
-other systems and not an implementation or execution authority for them.
+The recruiter-facing hierarchy is **Reliable Engine (Processor + Replication)**,
+**Reference Platform**, **Infrastructure**, **Operations**, and **Showcase**. Those labels
+preserve the existing authority boundaries: component-product authority, application
+composition, infrastructure desired state, operations execution/governance, and generated
+presentation remain separate. This repository is the presentation layer, not a monorepo
+copy of the other systems and not an implementation or execution authority for them.
 
 ```mermaid
 flowchart TB
@@ -54,12 +56,14 @@ publication fact, not a readiness or authority judgement:
 Private surfaces are named without fabricating public links. Public visibility does not
 mean a repository is complete, approved for production use, or authorized to perform cloud changes.
 
-## Processor, replication, and legacy worker exports
+## Reliable Engine: Processor + Replication
 
-Processor owns deterministic evidence-processing behavior and contracts. Replication owns
-immutable finalized-evidence replication, independent readback verification, collision
-refusal, and replication contracts. The Reference Platform consumes their release-pinned
-contracts and deterministic outputs.
+Reliable Engine is the recruiter-facing name for the combined Processor + Replication
+story; it is not a new repository or authority boundary. Processor owns deterministic
+evidence processing, checkpoint/recovery, lineage verification, and replay-safe/idempotent
+behavior. Replication owns immutable finalized-evidence replication, collision refusal,
+independent readback verification, replay safety, and deterministic convergence. The
+Reference Platform consumes their release-pinned contracts and deterministic outputs.
 
 The older public `edge-evidence-processor-worker` and
 `edge-evidence-replication-worker` repositories remain **legacy generated/export
@@ -75,6 +79,9 @@ a replication-environment subprocess that creates a fresh synthetic authority an
 the replication CLI against those exact report bytes.
 
 ## Reference Platform, Infrastructure, and Operations
+
+Public-safe recruiter summaries: [Reference Platform](REFERENCE-PLATFORM.md) and
+[Operations Control Model](OPERATIONS-CONTROL-MODEL.md).
 
 The Reference Platform is the separate application and cloud-integration surface. It
 composes user-facing/application services around release-pinned processor/replication
