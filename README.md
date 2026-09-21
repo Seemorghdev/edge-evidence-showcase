@@ -64,16 +64,28 @@ with [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md),
 the current evidence surfaces are deterministic receipts/JSON plus the GitHub-rendered
 Mermaid architecture, not a separate recruiter-facing UI.
 
-## 30-second portfolio map
+## 30-second flagship map
 
-| Canonical surface | What it owns | Current publication state |
+The recruiter-facing hierarchy is intentionally smaller than the repository inventory:
+
+```text
+Edge Evidence — flagship
+├── Reliable Engine
+│   ├── Processor — deterministic processing, checkpoint/recovery, lineage verification, replay-safe behavior
+│   └── Replication — immutable replication, collision refusal, independent readback, deterministic convergence
+├── Reference Platform — Web UI + Evidence API + Edge Agent; application/product integration
+├── Infrastructure — reviewed desired state
+├── Operations — controlled execution + evidence governance
+└── Showcase — public proof + navigation + reproducibility
+```
+
+| Recruiter layer | What it means | Public reviewer path |
 | --- | --- | --- |
-| Processor | Deterministic evidence processing, checkpoint/recovery semantics, lineage verification, and replay-safe processing contracts | `edge-evidence-processor` — private canonical product; legacy public worker export remains below |
-| Replication | Immutable replication of finalized evidence, independent readback verification, collision refusal, and replay-safe replication contracts | `edge-evidence-replication` — private canonical product; legacy public worker export remains below |
-| Reference Platform | User-facing/application services and cloud-application integration built from release-pinned component contracts | `edge-evidence-reference-platform` — private by current architecture decision; public publication is not current work |
-| Infrastructure | Generalized cloud/platform desired state — what reviewed platform state should exist, without execution authority | [`edge-evidence-infrastructure`](https://github.com/Seemorghdev/edge-evidence-infrastructure) — currently public |
-| Operations | Controlled execution and evidence governance — how reviewed humans/automation may inspect or change state | `edge-evidence-operations` — private control/governance surface by current architecture decision |
-| Showcase | Generated portfolio navigation, synthetic integration, reproducibility, and public claim boundaries | You are here; this repository is currently public |
+| Reliable Engine | Processor + Replication: deterministic processing and recovery, lineage verification, replay-safe/idempotent behavior, immutable replication, collision refusal, independent readback, and deterministic convergence | [`edge-evidence-processor-worker`](https://github.com/Seemorghdev/edge-evidence-processor-worker) and [`edge-evidence-replication-worker`](https://github.com/Seemorghdev/edge-evidence-replication-worker) are inspectable **legacy generated/export surfaces only**; canonical Processor and Replication remain private |
+| Reference Platform | Application/product layer around deterministic evidence components, packaged as Web UI, Evidence API, and Edge Agent | [Public-safe Reference Platform summary](docs/REFERENCE-PLATFORM.md); canonical source remains private |
+| Infrastructure | Reviewed desired state — what platform state should exist | [`edge-evidence-infrastructure`](https://github.com/Seemorghdev/edge-evidence-infrastructure) is the direct public technical surface; desired state does **not** authorize itself to execute |
+| Operations | Control-plane and evidence-governance layer for reviewed execution | [Public-safe Operations Control Model](docs/OPERATIONS-CONTROL-MODEL.md); canonical source remains private |
+| Showcase | Public proof, navigation, reproducibility, and claim boundaries | You are here; this repository is presentation/proof, not implementation or execution authority |
 
 Repository visibility describes **publication state only**. It is not a readiness,
 completeness, production, or authority signal: private does not mean unready, and public
@@ -81,14 +93,12 @@ does not make a repository cloud/deployment authority.
 
 ### Legacy generated worker exports
 
-[`edge-evidence-processor-worker`](https://github.com/Seemorghdev/edge-evidence-processor-worker)
-and
-[`edge-evidence-replication-worker`](https://github.com/Seemorghdev/edge-evidence-replication-worker)
-remain public **legacy generated/export surfaces**. They have not disappeared, and this
-bundle still includes their exact generated worker products for the integrated synthetic
-demo. The canonical current component-product repository surfaces are
-`edge-evidence-processor` and `edge-evidence-replication`; do not redirect canonical
-implementation authority to the legacy worker repositories or to `components/`.
+The public Processor and Replication worker repositories are inspection windows into the
+Reliable Engine's generated proof surfaces. They are **legacy generated/export surfaces**,
+not canonical authorities and not separate portfolio projects. This Showcase still bundles
+their exact generated worker products for the integrated synthetic demo; canonical
+implementation authority remains with the private Processor and Replication repositories,
+not the worker exports or the copied `components/` trees.
 
 ## What Project 03 demonstrates
 
