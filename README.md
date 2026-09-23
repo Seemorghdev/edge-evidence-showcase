@@ -69,7 +69,7 @@ Mermaid architecture, not a separate recruiter-facing UI.
 | Canonical surface | What it owns | Recruiter-facing publication state |
 | --- | --- | --- |
 | Processor | Deterministic evidence processing, checkpoint/recovery semantics, lineage verification, and replay-safe processing contracts | `edge-evidence-processor` remains private canonical authority; review the current public [`edge-evidence-processor-public`](https://github.com/Seemorghdev/edge-evidence-processor-public) projection |
-| Replication | Immutable replication of finalized evidence, independent readback verification, collision refusal, and replay-safe replication contracts | `edge-evidence-replication` remains private canonical authority; no standalone recruiter-facing Replication projection is linked from this page yet |
+| Replication | Immutable replication of finalized evidence, independent readback verification, collision refusal, and replay-safe replication contracts | `edge-evidence-replication` remains private canonical authority; review the current public [`edge-evidence-replication-projection`](https://github.com/Seemorghdev/edge-evidence-replication-projection) projection |
 | Reference Platform | User-facing/application services and cloud-application integration built from release-pinned component contracts | `edge-evidence-reference-platform` remains private canonical authority; review the public [`edge-evidence-reference-platform-public`](https://github.com/Seemorghdev/edge-evidence-reference-platform-public) projection |
 | Infrastructure | Generalized cloud/platform desired state — what reviewed platform state should exist, without execution authority | [`edge-evidence-infrastructure`](https://github.com/Seemorghdev/edge-evidence-infrastructure) is the direct public technical surface |
 | Operations | Controlled execution and evidence governance — how reviewed humans/automation may inspect or change state | Canonical operations authority remains private; review the public [`edge-evidence-operations-public`](https://github.com/Seemorghdev/edge-evidence-operations-public) projection |
@@ -86,9 +86,8 @@ and
 [`edge-evidence-replication-worker`](https://github.com/Seemorghdev/edge-evidence-replication-worker)
 remain public **legacy generated/export surfaces** used by this bundle's deterministic demo.
 They are not the primary recruiter navigation path and do not carry canonical implementation
-authority. Recruiters should use the current Processor public projection linked above;
-Replication remains represented in the bundled synthetic proof without a standalone
-recruiter-facing projection linked from this page.
+authority. Recruiters should use the current Processor and Replication public projections
+linked above; the legacy worker exports remain only as bundled synthetic-proof surfaces.
 
 ## What Project 03 demonstrates
 
@@ -229,8 +228,7 @@ curl --fail http://127.0.0.1:8080/api/demo
 ```
 
 Each instance runs the deterministic synthetic workload at most once, caches only its
-public summary in memory, and removes its temporary output. Batch-style execution remains
-available explicitly:
+public summary in memory, and removes its temporary output. Batch-style execution remains available explicitly:
 
 ```bash
 docker run --rm --network none \
