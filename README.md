@@ -75,6 +75,8 @@ Mermaid architecture, not a separate recruiter-facing UI.
 | Operations | Controlled execution and evidence governance — how reviewed humans/automation may inspect or change state | Canonical operations authority remains private; review the public [`edge-evidence-operations-public`](https://github.com/Seemorghdev/edge-evidence-operations-public) projection |
 | Showcase | Generated portfolio navigation, synthetic integration, reproducibility, and public claim boundaries | You are here; this repository is currently public |
 
+> **Workflow transparency:** Development uses agent-assisted engineering for bounded implementation and verification tasks under explicit owner architecture, review, validation, and publication control. The unusually high repository activity reflects that operating model, including generated projections and synchronized validation work. See [Engineering Workflow](https://github.com/Seemorghdev/Seemorghdev/blob/main/ENGINEERING-WORKFLOW.md).
+
 Repository visibility describes **publication state only**. It is not a readiness,
 completeness, production, or authority signal: private does not mean unready, and public
 does not make a repository cloud/deployment authority.
