@@ -1,5 +1,9 @@
 # Edge Evidence — Project 03 Integrated Showcase
 
+[![CI](https://github.com/Seemorghdev/edge-evidence-showcase/actions/workflows/ci.yml/badge.svg)](https://github.com/Seemorghdev/edge-evidence-showcase/actions/workflows/ci.yml)
+![Python 3.12+](https://img.shields.io/badge/Python-3.12%2B-informational)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+
 This repository is the **generated presentation and synthetic integration surface** for
 the Edge Evidence portfolio. It is not the implementation authority for processor,
 replication, the reference platform, infrastructure, or operations.
