@@ -4,6 +4,8 @@
 ![Python 3.12+](https://img.shields.io/badge/Python-3.12%2B-informational)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 
+**Live Demo:** [Reference Web UI](https://edge-evidence-web-ui-du62ueo2oa-ew.a.run.app/) — bounded synthetic recruiter surface.
+
 This repository is the **generated presentation and synthetic integration surface** for
 the Edge Evidence portfolio. It is not the implementation authority for processor,
 replication, the reference platform, infrastructure, or operations.
@@ -17,7 +19,7 @@ synthetic processor/replication path: separate worker environments, verified byt
 handoff, independent replication readback, and replay with no new writes.
 
 **What is separate cloud evidence.** The current accepted application/cloud path is the
-Reference Platform's bounded public Cloud Run recruiter deployment: three synthetic/read-only
+Reference Platform's bounded public Cloud Run recruiter deployment: three bounded synthetic
 services with browser/client verification and exact-origin CORS. This Showcase also has a
 current owner-authorized Heroku recruiter deployment using one Basic `web` dyno, with HTTPS
 smoke and browser acceptance verified. The earlier GKE observation and Showcase Cloud Run
@@ -252,17 +254,19 @@ Cloud evidence is intentionally separated from the local synthetic proof.
 
 **Current Reference Cloud Run recruiter path.** The separate [Reference Platform public projection](https://github.com/Seemorghdev/edge-evidence-reference-platform-public) has
 an accepted owner-authorized bounded public Cloud Run deployment of Web UI, Evidence API,
-and Edge Agent. Synthetic artifact, health/inspection, exact-origin CORS, automated Firefox
-browser, and final provider-readback checks passed. Private provider coordinates and retained
-evidence are intentionally not copied here.
+and Edge Agent. The recruiter-facing Live Demo linked above is the Web UI. The current
+browser journey rendered three synthetic artifacts, bounded inspection returned
+`healthy-complete`, and exact-origin CORS/browser checks passed. The supporting API includes
+a demo reset route confined to disposable in-memory fixtures; that route is not persistent
+evidence mutation authority. Supporting provider URLs, private provider coordinates, and
+retained evidence remain unpublished here.
 
 **Current Showcase Heroku recruiter path.** This Showcase has an accepted owner-authorized
 public-safe Heroku deployment using exactly one Basic `web` dyno, with zero add-ons and no
 unexpected process types. HTTPS smoke plus Firefox/browser, console, and network acceptance
-passed against the accepted release. The provider-assigned URL is not hard-coded into this
-generated source; publishing that exact URL remains a separate presentation choice. This
-proves a bounded live evaluator surface, not production availability or persistent evidence
-authority.
+passed against the accepted release. Its provider-assigned URL remains intentionally
+unlinked because the Reference Web UI is the single recruiter Live Demo. This proves a
+bounded live evaluator surface, not production availability or persistent evidence authority.
 
 **Historical evidence retained.** The earlier zero-mutation GKE external-exposure observation
 and the bounded authenticated-only Showcase Cloud Run deployment remain valid historical
