@@ -204,7 +204,7 @@ wait "$pid" 2>/dev/null || true
 ```
 
 Expected semantics are health `ok`, readiness `ready`, a first demo response with
-`status=pass` and `cached=false`, then a second `status=pass` response with `cached=true`.
+`status=pass` and `cached=false`, then a second `status=pass` response with `status=pass` and `cached=true`.
 When using GitHub Codespaces, the Ports panel should expose the declared **Showcase HTTP**
 port `8080`; opening it in a browser shows the public service document at `/`, and
 `/api/demo` exposes the same bounded synthetic summary. The adapter accepts no request
@@ -228,7 +228,8 @@ curl --fail http://127.0.0.1:8080/api/demo
 ```
 
 Each instance runs the deterministic synthetic workload at most once, caches only its
-public summary in memory, and removes its temporary output. Batch-style execution remains available explicitly:
+public summary in memory, and removes its temporary output. Batch-style execution remains
+available explicitly:
 
 ```bash
 docker run --rm --network none \
