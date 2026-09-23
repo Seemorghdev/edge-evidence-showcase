@@ -204,7 +204,7 @@ wait "$pid" 2>/dev/null || true
 ```
 
 Expected semantics are health `ok`, readiness `ready`, a first demo response with
-`status=pass` and `cached=false`, then a second `status=pass` response with `status=pass` and `cached=true`.
+`status=pass` and `cached=false`, then a second `status=pass` response with `cached=true`.
 When using GitHub Codespaces, the Ports panel should expose the declared **Showcase HTTP**
 port `8080`; opening it in a browser shows the public service document at `/`, and
 `/api/demo` exposes the same bounded synthetic summary. The adapter accepts no request
