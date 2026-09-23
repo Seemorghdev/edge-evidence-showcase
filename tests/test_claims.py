@@ -138,6 +138,10 @@ def test_portfolio_navigation_separates_canonical_surfaces_from_legacy_exports()
 
     for repository in (
         "edge-evidence-infrastructure",
+        "edge-evidence-processor-public",
+        "edge-evidence-replication-projection",
+        "edge-evidence-reference-platform-public",
+        "edge-evidence-operations-public",
         "edge-evidence-processor-worker",
         "edge-evidence-replication-worker",
     ):
@@ -147,34 +151,42 @@ def test_portfolio_navigation_separates_canonical_surfaces_from_legacy_exports()
     assert "legacy generated/export surfaces" in readme
 
 
-def test_reference_platform_private_decision_is_not_active_publication_pending() -> None:
+def test_private_canonical_authority_has_current_public_projections() -> None:
     readme = (ROOT / "README.md").read_text(encoding="utf-8")
     architecture = (ROOT / "docs" / "ARCHITECTURE.md").read_text(encoding="utf-8")
 
-    assert (
-        "`edge-evidence-reference-platform` — private by current architecture decision; "
-        "public publication is not current work"
-    ) in readme
-    assert (
-        "REF[Reference Platform<br/>application + cloud integration<br/>"
-        "private by current architecture decision]"
-    ) in architecture
+    for canonical in (
+        "edge-evidence-processor",
+        "edge-evidence-replication",
+        "edge-evidence-reference-platform",
+        "edge-evidence-operations",
+    ):
+        assert canonical in readme
+        assert canonical in architecture
 
-    assert (
-        "`edge-evidence-reference-platform` — currently private; public publication is pending"
-        not in readme
-    )
-    assert (
-        "REF[Reference Platform<br/>application + cloud integration<br/>"
-        "private; publication pending]"
-        not in architecture
-    )
-    assert "public publication is pending" not in readme
-    assert "private; publication pending" not in architecture
-    assert "private canonical product" in readme
-    assert "private control/governance surface by current architecture decision" in readme
-    assert "private canonical product" in architecture
-    assert "private control surface" in architecture
+    for projection in (
+        "edge-evidence-processor-public",
+        "edge-evidence-replication-projection",
+        "edge-evidence-reference-platform-public",
+        "edge-evidence-operations-public",
+    ):
+        url = f"https://github.com/Seemorghdev/{projection}"
+        assert url in readme
+        assert url in architecture
+
+    assert "private canonical authority" in readme
+    assert "private canonical authority" in architecture
+    assert "public recruiter projection" in architecture
+    assert "publication of a projection does not transfer canonical authority" in architecture.lower()
+
+    for stale in (
+        "public publication is not current work",
+        "public publication is pending",
+        "private; publication pending",
+        "any sanitized/generated public projection is a separate future decision",
+    ):
+        assert stale not in readme
+        assert stale not in architecture
 
 
 def test_recruiter_evaluation_path_is_tied_to_public_demo_contract() -> None:
