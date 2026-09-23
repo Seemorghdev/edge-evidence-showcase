@@ -9,12 +9,17 @@ copy of the other systems and not an implementation or execution authority for t
 
 ```mermaid
 flowchart TB
-    P[Processor<br/>canonical component product<br/>private canonical product]
-    R[Replication<br/>canonical component product<br/>private canonical product]
-    REF[Reference Platform<br/>application + cloud integration<br/>private by current architecture decision]
-    INF[Infrastructure<br/>desired state<br/>public visibility]
-    OPS[Operations<br/>controlled execution + evidence governance<br/>private control surface]
+    P[Processor<br/>private canonical authority]
+    R[Replication<br/>private canonical authority]
+    REF[Reference Platform<br/>private canonical authority]
+    INF[Infrastructure<br/>public desired-state surface]
+    OPS[Operations<br/>private canonical authority]
     S[Showcase<br/>generated presentation + synthetic integration<br/>public visibility]
+
+    PP[Processor<br/>public recruiter projection]
+    RP[Replication<br/>public recruiter projection]
+    REFP[Reference Platform<br/>public recruiter projection]
+    OPSP[Operations<br/>public recruiter projection]
 
     P -->|release-pinned contracts + outputs| REF
     R -->|release-pinned contracts + outputs| REF
@@ -22,14 +27,19 @@ flowchart TB
     OPS -->|reviewed inspect / change / verify| INF
     OPS -->|reviewed deploy / inspect / rollback| REF
 
+    PP -. reviewed projection .-> P
+    RP -. reviewed projection .-> R
+    REFP -. reviewed projection .-> REF
+    OPSP -. reviewed projection .-> OPS
+
     LP[Legacy public processor-worker export] -->|exact generated component| S
     LR[Legacy public replication-worker export] -->|exact generated component| S
 
-    S -. portfolio navigation / claim boundaries .-> P
-    S -. portfolio navigation / claim boundaries .-> R
-    S -. portfolio navigation / claim boundaries .-> REF
-    S -. portfolio navigation / claim boundaries .-> INF
-    S -. portfolio navigation / claim boundaries .-> OPS
+    S -. recruiter navigation .-> PP
+    S -. recruiter navigation .-> RP
+    S -. recruiter navigation .-> REFP
+    S -. recruiter navigation .-> INF
+    S -. recruiter navigation .-> OPSP
 
     S -->|subprocess + JSON receipt| PO[Verified synthetic processor report]
     PO -->|path + byte size + SHA-256| RH[Replication handoff subprocess]
@@ -43,18 +53,27 @@ flowchart TB
 ## Canonical portfolio surfaces
 
 The six canonical repository surfaces are Processor, Replication, Reference Platform,
-Infrastructure, Operations, and Showcase. Their current repository visibility is a
-publication fact, not a readiness or authority judgement:
+Infrastructure, Operations, and Showcase. Canonical repository visibility is a publication
+fact, not a readiness or authority judgement:
 
-- Processor — `edge-evidence-processor`, currently private;
-- Replication — `edge-evidence-replication`, currently private;
-- Reference Platform — `edge-evidence-reference-platform`, currently private;
-- Infrastructure — `edge-evidence-infrastructure`, currently public;
-- Operations — `edge-evidence-operations`, currently private;
-- Showcase — `edge-evidence-showcase`, currently public.
+- Processor — `edge-evidence-processor`, private canonical authority;
+- Replication — `edge-evidence-replication`, private canonical authority;
+- Reference Platform — `edge-evidence-reference-platform`, private canonical authority;
+- Infrastructure — [`edge-evidence-infrastructure`](https://github.com/Seemorghdev/edge-evidence-infrastructure), public direct technical surface;
+- Operations — `edge-evidence-operations`, private canonical authority;
+- Showcase — [`edge-evidence-showcase`](https://github.com/Seemorghdev/edge-evidence-showcase), public presentation surface.
 
-Private surfaces are named without fabricating public links. Public visibility does not
-mean a repository is complete, approved for production use, or authorized to perform cloud changes.
+Reviewed recruiter-facing projections expose selected public-safe engineering evidence
+without changing canonical authority:
+
+- [`edge-evidence-processor-public`](https://github.com/Seemorghdev/edge-evidence-processor-public)
+- [`edge-evidence-replication-projection`](https://github.com/Seemorghdev/edge-evidence-replication-projection)
+- [`edge-evidence-reference-platform-public`](https://github.com/Seemorghdev/edge-evidence-reference-platform-public)
+- [`edge-evidence-operations-public`](https://github.com/Seemorghdev/edge-evidence-operations-public)
+
+Public visibility does not mean a repository is complete, approved for production use, or
+authorized to perform cloud changes. A public projection does not become implementation,
+execution, or governance authority merely by being reviewable.
 
 ## Reliable Engine: Processor + Replication
 
@@ -64,6 +83,10 @@ evidence processing, checkpoint/recovery, lineage verification, and replay-safe/
 behavior. Replication owns immutable finalized-evidence replication, collision refusal,
 independent readback verification, replay safety, and deterministic convergence. The
 Reference Platform consumes their release-pinned contracts and deterministic outputs.
+
+The current recruiter-facing Processor and Replication surfaces are the reviewed public
+projections linked above. Their private canonical repositories remain implementation
+authority.
 
 The older public `edge-evidence-processor-worker` and
 `edge-evidence-replication-worker` repositories remain **legacy generated/export
@@ -85,19 +108,22 @@ Public-safe recruiter summaries: [Reference Platform](REFERENCE-PLATFORM.md) and
 
 The Reference Platform is the separate application and cloud-integration surface. It
 composes user-facing/application services around release-pinned processor/replication
-contracts and deterministic outputs. It remains private by current architecture decision;
-any sanitized/generated public projection is a separate future decision, not current
-publication work.
+contracts and deterministic outputs. Its canonical repository remains private, while the
+reviewed [`edge-evidence-reference-platform-public`](https://github.com/Seemorghdev/edge-evidence-reference-platform-public)
+projection is the recruiter-facing public surface.
 
 Infrastructure and Operations are deliberately separate:
 
 - **Infrastructure is desired state**: what reviewed cloud/platform state should exist.
-  Its current public visibility is not a completeness claim and does not grant execution
-  authority.
+  [`edge-evidence-infrastructure`](https://github.com/Seemorghdev/edge-evidence-infrastructure)
+  is the direct public technical surface; public visibility is not a completeness claim
+  and does not grant execution authority.
 - **Operations is controlled execution and evidence governance**: how reviewed humans or
   automation may inspect or change state, verify outcomes, and follow rollback/evidence
-  controls. It does not become desired-state authority merely because it may apply or
-  inspect Infrastructure.
+  controls. Canonical Operations authority remains private; the reviewed
+  [`edge-evidence-operations-public`](https://github.com/Seemorghdev/edge-evidence-operations-public)
+  projection is recruiter-facing and does not become desired-state authority merely
+  because it is public.
 
 This distinction prevents Terraform/Kubernetes/platform desired state from being
 conflated with the permissions, procedures, identities, and evidence required to inspect
@@ -106,7 +132,7 @@ or change that state.
 ## Showcase role
 
 The Showcase provides recruiter/reviewer navigation, deterministic synthetic integration,
-reproducibility guidance, and the public claim boundary. Its dotted portfolio-navigation
+reproducibility guidance, and the public claim boundary. Its dotted recruiter-navigation
 relationships in the diagram are descriptive only; they do not imply implementation,
 deployment, infrastructure, operations, publication, or persistent-evidence authority.
 
@@ -127,5 +153,5 @@ That separation matters for public claims:
 - private coordinates, retained evidence payloads, credentials, topology, and temporary
   endpoints are not copied into the public presentation.
 
-Canonical private repositories are intentionally named without public technical links.
-Their future publication is a separate release decision.
+Canonical private repositories remain intentionally separate from their public recruiter
+projections. Publication of a projection does not transfer canonical authority.
