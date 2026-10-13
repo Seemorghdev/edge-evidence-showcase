@@ -1,10 +1,20 @@
-# Edge Evidence — Project 03 Integrated Showcase
+# Edge Evidence — Synthetic Processing and Replication Showcase
 
 [![CI](https://github.com/Seemorghdev/edge-evidence-showcase/actions/workflows/ci.yml/badge.svg)](https://github.com/Seemorghdev/edge-evidence-showcase/actions/workflows/ci.yml)
 ![Python 3.12+](https://img.shields.io/badge/Python-3.12%2B-informational)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 
-**Live Demo (JSON/API):** [Heroku synthetic technical proof](https://seemorgh-evidence-showcase-45655632eff2.herokuapp.com/api/demo) — bounded synthetic Processor + Replication proof; returns JSON, not a visual UI.
+**[Open the live Visual Gateway](https://edge-evidence-visual-gateway-2e3eaeb86f95.herokuapp.com/)** — start here. Explore three synthetic examples and click **Explain this example** to understand what each state means and what a reviewer can inspect.
+
+Edge Evidence explores how to preserve evidence, process it reliably, and verify that
+copies match the original. The Visual Gateway brings together a Web UI, Evidence API,
+and read-only Edge Agent in one runtime for this demonstration. It inspects synthetic
+example states; it does not execute the complete processing and replication workflow
+or claim production-grade service isolation.
+
+**[Deeper technical proof — Processor + Replication (JSON/API)](https://seemorgh-evidence-showcase-45655632eff2.herokuapp.com/api/demo)** — this endpoint returns a synthetic Processor + Replication execution result that may be cached. The result records processing, a verified handoff to replication, independent readback of the copied bytes, and replay with no new writes. It returns JSON, not a visual application. Both demos use synthetic data and make no production-service claim.
+
+**Explore the public code:** [Processor](https://github.com/Seemorghdev/edge-evidence-processor-public) · [Replication](https://github.com/Seemorghdev/edge-evidence-replication-projection) · [Reference Platform: UI, API, Agent and gateway](https://github.com/Seemorghdev/edge-evidence-reference-platform-public).
 
 This repository is the **generated presentation and synthetic integration surface** for
 the Edge Evidence portfolio. It is not the implementation authority for processor,
@@ -12,17 +22,18 @@ replication, the reference platform, infrastructure, or operations.
 
 ## Evaluate in 2 minutes
 
-**What Project 03 demonstrates.** The portfolio separates deterministic evidence
-processing, immutable replication, application/cloud integration, infrastructure desired
-state, controlled operations, and public presentation. This Showcase itself proves the
-synthetic processor/replication path: separate worker environments, verified byte-for-byte
-handoff, independent replication readback, and replay with no new writes.
+**Start with the visual examples.** Open the Visual Gateway above, explore all three
+examples, and use each Explain button. The Agent explains the state without changing it.
+Then open the separate JSON/API proof to see the synthetic execution result: separate
+worker environments, verified byte-for-byte handoff, independent replication readback,
+and replay with no new writes. Follow the public code links to inspect how these work.
 
 **What is separate cloud evidence.** The Reference Platform's Cloud Run deployment and the earlier GKE observation are retained
 as historical engineering evidence. The documented Cloud Run UI URL returned HTTP 500 when
 last checked on 2026-10-13; current Google Cloud provider state has not been independently
-verified, so that URL is not presented as a current live UI. The Showcase's Heroku URL above
-currently provides a bounded synthetic JSON/API proof, not a visual UI. None of these make
+verified, so that URL is not presented as a current live UI. The Visual Gateway is the
+current browser entry point; the Showcase's separate Heroku endpoint provides the
+synthetic JSON/API execution proof. None of these make
 this repository deployment authority, production infrastructure, or persistent evidence
 authority.
 
@@ -66,9 +77,9 @@ environment you are evaluating, run two independent demos and compare `make fing
 outputs as shown in [`docs/REPRODUCIBILITY.md`](docs/REPRODUCIBILITY.md). Then continue
 with [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md),
 [`docs/CLAIMS-AND-LIMITATIONS.md`](docs/CLAIMS-AND-LIMITATIONS.md), and
-[`docs/REPRODUCIBILITY.md`](docs/REPRODUCIBILITY.md). No decorative screenshot is added:
-the current evidence surfaces are deterministic receipts/JSON plus the GitHub-rendered
-Mermaid architecture, not a separate recruiter-facing UI.
+[`docs/REPRODUCIBILITY.md`](docs/REPRODUCIBILITY.md). Local proof outputs are receipts/JSON
+plus the GitHub-rendered Mermaid architecture. For the separate visual inspection
+experience, use the live Visual Gateway linked above.
 
 ## 30-second portfolio map
 
@@ -248,9 +259,11 @@ docker run --rm --network none \
 Container-local files, SQLite databases, and in-memory summaries are demonstration state
 only and are not persistent evidence authority.
 
-## Cloud evidence — current, historical, and deliberately unclaimed
+## Current Heroku demos and historical Google Cloud evidence
 
 Cloud evidence is intentionally separated from the local synthetic proof.
+
+**Current Visual Gateway.** The [live Visual Gateway](https://edge-evidence-visual-gateway-2e3eaeb86f95.herokuapp.com/) is the primary browser entry point. Its Web UI, Evidence API, and read-only Edge Agent let visitors inspect three synthetic example states and their explanations. The gateway combines those responsibilities in one runtime; it does not run the complete Processor + Replication workflow. Review its implementation in the [public Reference Platform repository](https://github.com/Seemorghdev/edge-evidence-reference-platform-public).
 
 **Historical Reference Platform Cloud Run evidence.** The separate [Reference Platform public projection](https://github.com/Seemorghdev/edge-evidence-reference-platform-public) has retained evidence of a bounded three-service Cloud Run deployment and successful browser checks at the time of that validation. The formerly documented Web UI URL returned HTTP 500 when last checked on 2026-10-13. Current Google Cloud provider state has not been independently verified; treat the Cloud Run deployment as historical, not as the current live UI. Private provider coordinates and retained evidence remain unpublished here.
 
