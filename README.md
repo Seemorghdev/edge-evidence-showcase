@@ -12,7 +12,7 @@ and read-only Edge Agent in one runtime for this demonstration. It inspects synt
 example states; it does not execute the complete processing and replication workflow
 or claim production-grade service isolation.
 
-**[Deeper technical proof — Processor + Replication (JSON/API)](https://seemorgh-evidence-showcase-45655632eff2.herokuapp.com/api/demo)** — this separate demonstration runs synthetic processing, verifies the handoff to replication, reads back the copied bytes, and checks that replay makes no new writes. It returns JSON, not a visual application. Both demos use synthetic data and make no production-service claim.
+**[Deeper technical proof — Processor + Replication (JSON/API)](https://seemorgh-evidence-showcase-45655632eff2.herokuapp.com/api/demo)** — this endpoint returns a synthetic Processor + Replication execution result that may be cached. The result records processing, a verified handoff to replication, independent readback of the copied bytes, and replay with no new writes. It returns JSON, not a visual application. Both demos use synthetic data and make no production-service claim.
 
 **Explore the public code:** [Processor](https://github.com/Seemorghdev/edge-evidence-processor-public) · [Replication](https://github.com/Seemorghdev/edge-evidence-replication-projection) · [Reference Platform: UI, API, Agent and gateway](https://github.com/Seemorghdev/edge-evidence-reference-platform-public).
 
