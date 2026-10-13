@@ -4,7 +4,7 @@
 ![Python 3.12+](https://img.shields.io/badge/Python-3.12%2B-informational)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 
-**Live Demo:** [Reference Web UI](https://edge-evidence-web-ui-du62ueo2oa-ew.a.run.app/) — bounded synthetic recruiter surface.
+**Live Demo (JSON/API):** [Heroku synthetic technical proof](https://seemorgh-evidence-showcase-45655632eff2.herokuapp.com/api/demo) — bounded synthetic Processor + Replication proof; returns JSON, not a visual UI.
 
 This repository is the **generated presentation and synthetic integration surface** for
 the Edge Evidence portfolio. It is not the implementation authority for processor,
@@ -18,13 +18,13 @@ state, controlled operations, and public presentation. This Showcase itself prov
 synthetic processor/replication path: separate worker environments, verified byte-for-byte
 handoff, independent replication readback, and replay with no new writes.
 
-**What is separate cloud evidence.** The current accepted application/cloud path is the
-Reference Platform's bounded public Cloud Run recruiter deployment: three bounded synthetic
-services with browser/client verification and exact-origin CORS. This Showcase also has a
-current owner-authorized Heroku recruiter deployment using one Basic `web` dyno, with HTTPS
-smoke and browser acceptance verified. The earlier GKE observation and Showcase Cloud Run
-deployment remain retained historical evidence. None of these make this repository deployment
-authority, production infrastructure, or persistent evidence authority.
+**What is separate cloud evidence.** The Reference Platform's Cloud Run deployment and the earlier GKE observation are retained
+as historical engineering evidence. The documented Cloud Run UI URL returned HTTP 500 when
+last checked on 2026-10-13; current Google Cloud provider state has not been independently
+verified, so that URL is not presented as a current live UI. The Showcase's Heroku URL above
+currently provides a bounded synthetic JSON/API proof, not a visual UI. None of these make
+this repository deployment authority, production infrastructure, or persistent evidence
+authority.
 
 **Fastest local path.** A Codespace or the provided devcontainer is the preferred
 zero-friction environment. On a local host, `scripts/setup.sh` requires Python 3.12 or
@@ -252,21 +252,9 @@ only and are not persistent evidence authority.
 
 Cloud evidence is intentionally separated from the local synthetic proof.
 
-**Current Reference Cloud Run recruiter path.** The separate [Reference Platform public projection](https://github.com/Seemorghdev/edge-evidence-reference-platform-public) has
-an accepted owner-authorized bounded public Cloud Run deployment of Web UI, Evidence API,
-and Edge Agent. The recruiter-facing Live Demo linked above is the Web UI. The current
-browser journey rendered three synthetic artifacts, bounded inspection returned
-`healthy-complete`, and exact-origin CORS/browser checks passed. The supporting API includes
-a demo reset route confined to disposable in-memory fixtures; that route is not persistent
-evidence mutation authority. Supporting provider URLs, private provider coordinates, and
-retained evidence remain unpublished here.
+**Historical Reference Platform Cloud Run evidence.** The separate [Reference Platform public projection](https://github.com/Seemorghdev/edge-evidence-reference-platform-public) has retained evidence of a bounded three-service Cloud Run deployment and successful browser checks at the time of that validation. The formerly documented Web UI URL returned HTTP 500 when last checked on 2026-10-13. Current Google Cloud provider state has not been independently verified; treat the Cloud Run deployment as historical, not as the current live UI. Private provider coordinates and retained evidence remain unpublished here.
 
-**Current Showcase Heroku recruiter path.** This Showcase has an accepted owner-authorized
-public-safe Heroku deployment using exactly one Basic `web` dyno, with zero add-ons and no
-unexpected process types. HTTPS smoke plus Firefox/browser, console, and network acceptance
-passed against the accepted release. Its provider-assigned URL remains intentionally
-unlinked because the Reference Web UI is the single recruiter Live Demo. This proves a
-bounded live evaluator surface, not production availability or persistent evidence authority.
+**Current Showcase Heroku JSON/API demo.** The public [Heroku synthetic technical proof](https://seemorgh-evidence-showcase-45655632eff2.herokuapp.com/api/demo) is a bounded JSON/API demonstration of the integrated synthetic Processor + Replication path. It is not a visual UI. At the last read-only provider check on 2026-10-13, the app had one Basic `web` dyno, zero add-ons, and no unexpected process types. This proves a bounded live evaluator surface, not production availability or persistent evidence authority.
 
 **Historical evidence retained.** The earlier zero-mutation GKE external-exposure observation
 and the bounded authenticated-only Showcase Cloud Run deployment remain valid historical
