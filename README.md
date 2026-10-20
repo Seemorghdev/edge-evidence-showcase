@@ -4,7 +4,7 @@
 ![Python 3.12+](https://img.shields.io/badge/Python-3.12%2B-informational)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 
-**[Open the live Visual Gateway](https://edge-evidence-visual-gateway-2e3eaeb86f95.herokuapp.com/)** — start here. Explore three synthetic examples and click **Explain this example** to understand what each state means and what a reviewer can inspect.
+**[Open the live Visual Gateway](https://edge-evidence-visual-gateway-2e3eaeb86f95.herokuapp.com/)** — start with **Inspect** to compare three synthetic records and their deterministic, read-only classifications. **Proof** presents a separate retained processing-and-replication result. **Ask** explains the optional local Llama workbench; it runs no hosted model and never connects to a reviewer's computer.
 
 Edge Evidence explores how to preserve evidence, process it reliably, and verify that
 copies match the original. The Visual Gateway brings together a Web UI, Evidence API,
@@ -22,11 +22,21 @@ replication, the reference platform, infrastructure, or operations.
 
 ## Evaluate in 2 minutes
 
-**Start with the visual examples.** Open the Visual Gateway above, explore all three
-examples, and use each Explain button. The Agent explains the state without changing it.
-Then open the separate JSON/API proof to see the synthetic execution result: separate
+**Start with Inspect.** Open the Visual Gateway above and select each of the three
+independent synthetic records. Review the supplied input and deterministic inspector
+facts without changing evidence or running workers. Open **Proof** to examine the
+separate retained synthetic result and its qualifications; the JSON/API link above
+provides the underlying execution result, which may be cached. It records separate
 worker environments, verified byte-for-byte handoff, independent replication readback,
-and replay with no new writes. Follow the public code links to inspect how these work.
+and replay with no new writes—not a fresh pipeline run triggered by the interface.
+
+**Optional local model.** Hosted **Ask** links to the
+[local Llama workbench guide](https://docs.mehridian.tech/edge-evidence/local-workbench/)
+and [public source](https://github.com/Seemorghdev/edge-evidence-reference-platform-public/tree/main/examples/local-llama-workbench).
+Inference runs on your own computer. Fallible model explanations and provisional
+streams remain separate from deterministic inspector facts; delayed, unhelpful or
+withheld answers are documented limitations. The model cannot execute workers or
+authorize changes. Follow the public code links to inspect the implementation.
 
 **What is separate cloud evidence.** The Reference Platform's Cloud Run deployment and the earlier GKE observation are retained
 as historical engineering evidence. The documented Cloud Run UI URL returned HTTP 500 when
