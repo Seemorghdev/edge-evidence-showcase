@@ -118,7 +118,9 @@ They are not the primary recruiter navigation path and do not carry canonical im
 authority. Recruiters should use the current Processor and Replication public projections
 linked above; the legacy worker exports remain only as bundled synthetic-proof surfaces.
 
-## What Project 03 demonstrates
+## What the Edge Evidence components demonstrate
+
+The frozen Project 03 research is a separate account of related verification questions. This synthetic Showcase neither reruns nor validates its findings.
 
 The portfolio demonstrates a deliberately separated evidence pipeline rather than one
 large process with hidden authority:
