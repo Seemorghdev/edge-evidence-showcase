@@ -127,6 +127,9 @@ def test_portfolio_navigation_separates_canonical_surfaces_from_legacy_exports()
     assert all("not the canonical" in item["relationship"] for item in legacy.values())
 
     readme = (ROOT / "README.md").read_text(encoding="utf-8")
+    overview = (ROOT / "docs" / "portfolio-overview.md").read_text(
+        encoding="utf-8"
+    )
     for repository in (
         "edge-evidence-processor",
         "edge-evidence-replication",
@@ -134,7 +137,7 @@ def test_portfolio_navigation_separates_canonical_surfaces_from_legacy_exports()
         "edge-evidence-operations",
     ):
         assert f"](https://github.com/Seemorghdev/{repository})" not in readme
-        assert repository in readme
+        assert repository in overview
 
     for repository in (
         "edge-evidence-infrastructure",
@@ -143,16 +146,21 @@ def test_portfolio_navigation_separates_canonical_surfaces_from_legacy_exports()
         "edge-evidence-reference-platform-public",
         "edge-evidence-operations-public",
         "edge-evidence-processor-worker",
-        "edge-evidence-replication-worker",
     ):
-        assert f"https://github.com/Seemorghdev/{repository}" in readme
+        assert f"https://github.com/Seemorghdev/{repository}" in overview
 
-    assert "publication state only" in readme
-    assert "legacy generated/export surfaces" in readme
+    assert "https://github.com/Seemorghdev/edge-evidence-replication-worker" not in overview
+    assert "an earlier replication worker (no longer public)" in overview
+    assert " (archived)" in overview
+    assert "publication state only" in overview
+    assert "legacy generated/export surfaces" in overview
 
 
 def test_private_canonical_authority_has_current_public_projections() -> None:
     readme = (ROOT / "README.md").read_text(encoding="utf-8")
+    overview = (ROOT / "docs" / "portfolio-overview.md").read_text(
+        encoding="utf-8"
+    )
     architecture = (ROOT / "docs" / "ARCHITECTURE.md").read_text(encoding="utf-8")
 
     for canonical in (
@@ -161,7 +169,7 @@ def test_private_canonical_authority_has_current_public_projections() -> None:
         "edge-evidence-reference-platform",
         "edge-evidence-operations",
     ):
-        assert canonical in readme
+        assert canonical in overview
         assert canonical in architecture
 
     for projection in (
@@ -171,10 +179,10 @@ def test_private_canonical_authority_has_current_public_projections() -> None:
         "edge-evidence-operations-public",
     ):
         url = f"https://github.com/Seemorghdev/{projection}"
-        assert url in readme
+        assert url in overview
         assert url in architecture
 
-    assert "private canonical authority" in readme
+    assert "Private canonical source" in overview
     assert "private canonical authority" in architecture
     assert "public recruiter projection" in architecture
     assert "publication of a projection does not transfer canonical authority" in architecture.lower()
@@ -185,12 +193,15 @@ def test_private_canonical_authority_has_current_public_projections() -> None:
         "private; publication pending",
         "any sanitized/generated public projection is a separate future decision",
     ):
-        assert stale not in readme
+        assert stale not in overview
         assert stale not in architecture
 
 
 def test_recruiter_evaluation_path_is_tied_to_public_demo_contract() -> None:
     readme = (ROOT / "README.md").read_text(encoding="utf-8")
+    overview = (ROOT / "docs" / "portfolio-overview.md").read_text(
+        encoding="utf-8"
+    )
     demo = (ROOT / "demo" / "run_showcase.py").read_text(encoding="utf-8")
     reproducibility = (ROOT / "docs" / "REPRODUCIBILITY.md").read_text(
         encoding="utf-8"
@@ -218,15 +229,15 @@ def test_recruiter_evaluation_path_is_tied_to_public_demo_contract() -> None:
         '"integrated_replication_replay_is_noop": true',
     )
     for marker in expected_sample:
-        assert marker in readme
+        assert marker in overview
 
-    assert "A fresh run of this exact deterministic bundle produces" not in readme
-    assert "not a universal value across every supported host or toolchain" in readme
-    assert "same fixed toolchain/environment" in readme
-    assert "Codespaces direct HTTP demonstration" in readme
-    assert "</dev/null" in readme
-    assert "from urllib.request import urlopen" in readme
-    assert "Docker is not bundled into the preferred Codespace" in readme
+    assert "A fresh run of this exact deterministic bundle produces" not in overview
+    assert "not a universal value across every supported host or toolchain" in overview
+    assert "same fixed toolchain/environment" in overview
+    assert "Codespaces direct HTTP demonstration" in overview
+    assert "</dev/null" in overview
+    assert "from urllib.request import urlopen" in overview
+    assert "Docker is not bundled into the preferred Codespace" in overview
 
     assert devcontainer["forwardPorts"] == [8080]
     assert devcontainer["portsAttributes"]["8080"] == {
